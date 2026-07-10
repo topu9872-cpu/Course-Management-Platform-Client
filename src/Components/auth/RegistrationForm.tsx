@@ -101,12 +101,12 @@ const [role, setRole] = useState('student');
               </button>
               <button
                 type="button"
-                onClick={() => setRole('teacher')}
+                onClick={() => setRole('instructor')}
                 className={`py-2 text-sm font-semibold rounded-md transition-all ${
-                  role === 'teacher' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'
+                  role === 'instructor' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
-                Teacher
+                Instructor
               </button>
             </div>
 

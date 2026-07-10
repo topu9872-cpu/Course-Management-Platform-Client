@@ -2,17 +2,31 @@ import Link from "next/link";
 import NavLink from "./NavLink";
 
 const NavBar = () => {
+  type User = {
+    name: string;
+    role: string;
+    email: string;
+  };
+  const user: User = { role: "student", name: "topu", email: "topu@example.com" };
+
   const NavData = (
     <>
       <NavLink href="/">Home</NavLink>
       <NavLink href="/courses">Courses</NavLink>
       <NavLink href="/about">About</NavLink>
+      <NavLink
+        href={
+          user.role === "admin"
+            ? "/dashboard/admin"
+            : user.role === "instructor"
+              ? "/dashboard/instructor"
+              : "/dashboard/student"
+        }
+      >
+        Dashboard
+      </NavLink>
     </>
   );
-  type User = {
-    name: string;
-  };
-  const user: User = { name: "mahedi hasan topu" };
 
   return (
     <nav>
@@ -58,14 +72,12 @@ const NavBar = () => {
         <div className="navbar-end">
           {user ? (
             <div className="flex items-center gap-7">
-                  <h1 className="max-w-19 text-[15px] font-bold text-blue-500 hover:max-w-xs truncate transition-all duration-2000 ease-in-out cursor-pointer">
-    {user?.name}
-  </h1>
+              <h1 className="max-w-19 text-[15px] font-bold text-blue-500 hover:max-w-xs truncate transition-all duration-2000 ease-in-out cursor-pointer">
+                {user?.name}
+              </h1>
 
-  <button className="btn btn-primary shrink-0">
-    Logout
-  </button>
-</div>
+              <button className="btn btn-primary shrink-0">Logout</button>
+            </div>
           ) : (
             <div>
               <Link href="/login">Login</Link>
