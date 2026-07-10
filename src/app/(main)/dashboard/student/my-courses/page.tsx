@@ -1,4 +1,6 @@
-import MyCourses from "@/DashboardComponents/Student/MyCoursesPage";
+import { LazyLoader } from "@/Components/UI/LazyLoder";
+
+const MyCourses =LazyLoader(()=>import ("@/DashboardComponents/Student/MyCoursesPage"));
 
 
 const MyCoursesPage = () => {

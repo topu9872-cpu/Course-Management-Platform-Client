@@ -1,4 +1,6 @@
-import StudentDashboard from "@/DashboardComponents/Student/StudentDashboard";
+import { LazyLoader } from "@/Components/UI/LazyLoder";
+
+const StudentDashboard =LazyLoader(()=>import ("@/DashboardComponents/Student/StudentDashboard"));
 
 
 const StudentPage = () => {

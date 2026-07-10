@@ -114,7 +114,7 @@ export const adminNavigation: NavigationItem[] = [
     id: "courses",
     label: "Courses",
     icon: GraduationCap,
-    path: "/dashboard/admin/courses",
+    path: "/courses",
   },
   {
     id: "categories",

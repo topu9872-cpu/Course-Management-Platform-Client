@@ -1,4 +1,6 @@
-import Certificates from "@/DashboardComponents/Student/CertificatesPage";
+import { LazyLoader } from "@/Components/UI/LazyLoder";
+
+const Certificates =LazyLoader(()=>import ("@/DashboardComponents/Student/CertificatesPage"));
 
 
 const CertificatesPage = () => {

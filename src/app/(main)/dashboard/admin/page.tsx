@@ -1,9 +1,12 @@
+import { LazyLoader } from "@/Components/UI/LazyLoder";
+
+const AdminDashboard =LazyLoader(()=>import ("@/DashboardComponents/Admin/AdminDashboard"));
 
 
 const AdminPage = () => {
   return (
     <div>
-        src\app\(main)\dashboard
+        <AdminDashboard/>
     </div>
   );
 };

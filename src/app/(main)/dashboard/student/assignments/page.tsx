@@ -1,4 +1,6 @@
-import Assignments from "@/DashboardComponents/Student/AssignmentsPage";
+import { LazyLoader } from "@/Components/UI/LazyLoder";
+
+const Assignments = LazyLoader(()=>import("@/DashboardComponents/Student/AssignmentsPage"));
 
 
 const AssignmentsPage = () => {
