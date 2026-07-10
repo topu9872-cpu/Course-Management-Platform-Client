@@ -5,7 +5,7 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const RegisterPage = () => {
-
+const [role, setRole] = useState('student');
    const [visible, setVisible] = useState(false);
 
     const handleSubmit=(e:React.FormEvent<HTMLFormElement>)=>{
@@ -89,6 +89,26 @@ const RegisterPage = () => {
               className="file-input file-input-bordered w-full"
             />
           </div>
+          <div className="grid grid-cols-2 gap-2 bg-gray-100 p-1 rounded-lg">
+              <button
+                type="button"
+                onClick={() => setRole('student')}
+                className={`py-2 text-sm font-semibold rounded-md transition-all ${
+                  role === 'student' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Student
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('teacher')}
+                className={`py-2 text-sm font-semibold rounded-md transition-all ${
+                  role === 'teacher' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Teacher
+              </button>
+            </div>
 
           {/* Register */}
           <button className="btn btn-primary w-full">
