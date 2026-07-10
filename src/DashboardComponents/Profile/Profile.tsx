@@ -13,6 +13,7 @@ import {
 const MOCK_USER_DATA = {
   student: {
     role: "Student",
+    image:'ifja',
     name: "Topu Ahmed",
     username: "topu_dev",
     email: "topu@example.com",
@@ -35,6 +36,7 @@ const MOCK_USER_DATA = {
   instructor: {
     role: "Instructor",
     name: "Dr. Sarah Jenkins",
+    image:'jfao,',
     username: "s_jenkins",
     email: "s.jenkins@platform.edu",
     phone: "+1 (555) 234-5678",
@@ -56,6 +58,7 @@ const MOCK_USER_DATA = {
   admin: {
     role: "Admin",
     name: "Alex Rivera",
+    image:'fjafak',
     username: "alex_sysadmin",
     email: "alex.admin@platform.edu",
     phone: "+1 (555) 987-6543",
@@ -103,6 +106,17 @@ const Profile = () => {
     toast.error("Session Severed", { description: "Terminated active web token storage parameters. Relocating routing focus back to authentication portal." });
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  // Preview
+  const preview = URL.createObjectURL(file);
+
+  // setData({ ...data, image: preview });
+};
+
+const fileInputRef = React.useRef<HTMLInputElement>(null);
   return (
     <div className="min-h-screen bg-slate-50/60 text-slate-900 antialiased font-sans px-4 py-8 sm:px-6 lg:px-8">
       <Toaster position="top-right" richColors closeButton />
@@ -110,21 +124,7 @@ const Profile = () => {
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* ROLE SIMULATION BAR */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-3 shadow-xs flex flex-wrap items-center justify-between gap-3">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 flex items-center gap-1.5">
-            <Command className="h-3.5 w-3.5 text-blue-500" /> Switch Operational View Context:
-          </span>
-          <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
-            {(["student", "instructor", "admin"] as const).map((r) => (
-              <button 
-                key={r} onClick={() => { setActiveRole(r); setIsEditing(false); }}
-                className={`px-4 py-1.5 rounded-lg transition-all capitalize ${activeRole === r ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-900"}`}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
-        </div>
+      
 
         {/* PAGE HEADER */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-sm space-y-4">
@@ -149,33 +149,52 @@ const Profile = () => {
           
           {/* LEFT: IDENTIFIER AVATAR CARD & QUICK ACTIONS */}
           <div className="space-y-6">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 text-center space-y-4">
-              {/* Avatar Section Handling Gracefully Placeholder */}
-              <div className="relative group w-24 h-24 mx-auto">
-                <div className="w-full h-full rounded-full bg-linear-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white text-3xl font-bold uppercase tracking-wider shadow-inner group-hover:scale-102 transition-transform duration-300">
-                  {data.name.split(" ").map(n => n[0]).join("")}
-                </div>
-                <button onClick={triggerUploadUI} className="absolute bottom-0 right-0 p-1.5 bg-white border border-slate-200 text-slate-600 rounded-full shadow-md hover:text-blue-600 hover:scale-110 transition-all" title="Upload Metadata Photo">
-                  <Camera className="h-3.5 w-3.5" />
-                </button>
-              </div>
+       
+<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 text-center space-y-4">
+  <div className="relative group w-24 h-24 mx-auto">
+    {/* Avatar Preview */}
+    <div className="w-full h-full rounded-full bg-blue-600 flex items-center justify-center text-white text-3xl font-bold uppercase tracking-wider shadow-inner group-hover:scale-105 transition-transform duration-300">
+      {data.name.split(" ").map(n => n[0]).join("")}
+    </div>
+    
+    {/* Hidden File Input */}
+    <input 
+      type="file" 
+      ref={fileInputRef} 
+      className="hidden" 
+      accept="image/*"
+      onChange={(e) => {
+        if (e.target.files && e.target.files[0]) {
+          triggerUploadUI(); // Your existing upload logic
+        }
+      }}
+    />
 
-              <div className="space-y-1">
-                <h2 className="text-base font-bold text-slate-900 tracking-tight">{data.name}</h2>
-                <p className="text-xs text-slate-400 font-medium font-mono">@{data.username}</p>
-              </div>
+    {/* Trigger Button */}
+    <button 
+      onClick={() => fileInputRef.current?.click()} 
+      className="absolute bottom-0 right-0 p-1.5 bg-white border border-slate-200 text-slate-600 rounded-full shadow-md hover:text-blue-600 hover:scale-110 transition-all" 
+      title="Upload Metadata Photo"
+    >
+      <Camera className="h-3.5 w-3.5" />
+    </button>
+  </div>
 
-              {/* Dynamic Role Badge Handling */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">
-                <Shield className="h-3.5 w-3.5" /> {data.role} Node
-              </div>
+  <div className="space-y-1">
+    <h2 className="text-base font-bold text-slate-900 tracking-tight">{data.name}</h2>
+    <p className="text-xs text-slate-400 font-medium font-mono">@{data.username}</p>
+  </div>
 
-              <div className="pt-2 space-y-2 text-[11px] font-semibold text-slate-500 border-t border-slate-50 text-left">
-                <div className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-slate-400" /> {data.email}</div>
-                <div className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-slate-400" /> {data.phone}</div>
-                <div className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-slate-400" /> {data.address}</div>
-              </div>
-            </motion.div>
+  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">
+    <Shield className="h-3.5 w-3.5" /> {data.role} Node
+  </div>
+
+  <div className="pt-2 space-y-2 text-[11px] font-semibold text-slate-500 border-t border-slate-50 text-left">
+    <div className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-slate-400" /> {data.email}</div>
+    <div className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-slate-400" /> {data.phone}</div>
+    <div className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-slate-400" /> {data.address}</div>
+  </div>
+</motion.div>
 
             {/* QUICK ACTIONS INFRASTRUCTURE CONTAINER */}
             <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm space-y-2">
@@ -230,7 +249,9 @@ const Profile = () => {
             </div>
 
             {/* PERSONAL INFORMATION FORM SCHEMAS (UI INTERACTION SIMULATOR) */}
-            <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm space-y-4">
+          <div className="flex flex-col items-center gap-4 pb-5 border-b border-slate-200">
+ 
+    <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm space-y-4">
               <h3 className="text-sm font-bold text-slate-900 tracking-tight">Personal Identity Data Model</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
@@ -268,10 +289,7 @@ const Profile = () => {
                 )}
               </AnimatePresence>
             </div>
-
-            {/* ACCOUNT METADATA & TRANSACTION CHRONOLOGY REGION */}
-        
-
+</div>
           </div>
 
         </div>

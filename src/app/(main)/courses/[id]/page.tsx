@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Star, Users, Clock, Globe, Calendar, Share2, Heart, Check,
+  Star, Users, Clock, Globe,  Share2, Heart, Check,
   ChevronDown, BookOpen, Award, Radio, Smartphone,
   Download, MessageSquare, Code, ArrowRight, ShieldCheck, ImageIcon
 } from "lucide-react";

@@ -16,8 +16,10 @@ import {
   studentNavigation,
 } from "./RouteOfAllRole";
 import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
-const user = { role: "admin" ,name:'topu', email:'topu@example.com' };
+const user = { role: "instructor", name: "topu", email: "topu@example.com" };
 const navigation =
   user?.role === "admin"
     ? adminNavigation
@@ -43,6 +45,9 @@ export const CourseHubSidebar = () => {
 
   const SidebarContent = ({ isMobile = false }) => {
     const showExpanded = !isCollapsed || isMobile;
+
+    const pathName = usePathname();
+
     return (
       <div className="flex h-full flex-col justify-between bg-white px-3 py-4 text-slate-900 select-none">
         <div>
@@ -55,7 +60,6 @@ export const CourseHubSidebar = () => {
             </div>
             {showExpanded && (
               <div className="flex flex-col min-w-0">
-               
                 <span className="truncate text-[10px] font-medium text-slate-400 uppercase tracking-wider mt-0.5">
                   Course Management Platform
                 </span>
@@ -64,58 +68,51 @@ export const CourseHubSidebar = () => {
           </div>
 
           {/* Nav Items */}
-         <div className="mt-5 space-y-5 overflow-y-auto overflow-x-hidden no-scrollbar max-h-[calc(100vh-190px)]">
-  <ul className="space-y-1">
-    {navigation?.map((item) => {
-      const isActive = activeItem === item.id;
-      const Icon = item.icon;
-      return (
-        <li key={item.id}>
-          <Link
-            href={item.path}
-            onClick={() => {
-              setActiveItem(item.id);
-              if (isMobile) setIsMobileOpen(false);
-            }}
-            className={`group relative flex w-full items-center rounded-md text-xs transition-all duration-150 outline-none ${
-              showExpanded
-                ? "gap-2.5 px-2.5 py-2"
-                : "justify-center p-2"
-            } ${isActive ? "bg-blue-50 font-semibold text-blue-600" : "font-medium text-slate-500 hover:bg-zinc-100 hover:scale-105 hover:text-slate-900"}`}
-          >
-            {isActive && (
-              <motion.div
-                layoutId="sidebarActiveIndicator"
-                className="absolute left-0 top-1 bottom-1 w-[2.5px] rounded-r bg-blue-600"
-                transition={{
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 32,
-                }}
-              />
-            )}
+          <div className="mt-5 space-y-5 overflow-y-auto overflow-x-hidden no-scrollbar max-h-[calc(100vh-190px)]">
+            <ul className="space-y-1">
+              {navigation.map((item) => {
+                const isActive = pathName === item.path;
+                const Icon = item.icon;
 
-            {Icon && (
-              <Icon
-                className={`h-4 w-4 shrink-0 transition-transform duration-150 group-hover:scale-[1.02] ${isActive ? "text-blue-600" : "text-slate-400 group-hover:text-slate-600"}`}
-              />
-            )}
+                return (
+                  <li key={item.id}>
+                    <Link
+                      href={item.path}
+                      onClick={() => {
+                        if (isMobile) setIsMobileOpen(false);
+                      }}
+                      className={`group relative flex w-full items-center rounded-md text-xs transition-all duration-150 ${
+                        showExpanded
+                          ? "gap-2.5 px-2.5 py-2"
+                          : "justify-center p-2"
+                      } ${
+                        isActive
+                          ? "bg-blue-50 font-semibold text-blue-600"
+                          : "font-medium text-slate-500 hover:bg-zinc-100 hover:scale-105 hover:text-slate-900"
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="sidebarActiveIndicator"
+                          className="absolute left-0 top-1 bottom-1 w-[2.5px] rounded-r bg-blue-600"
+                        />
+                      )}
 
-            {showExpanded ? (
-              <span className="truncate tracking-wide">
-                {item.label}
-              </span>
-            ) : (
-              <div className="absolute left-full top-1/2 ml-3 -translate-y-1/2 scale-95 opacity-0 pointer-events-none rounded border border-slate-200 bg-slate-900 px-2 py-1 text-[10px] font-medium text-white shadow-sm transition-all duration-100 group-hover:scale-100 group-hover:opacity-100 z-50">
-                {item.label}
-              </div>
-            )}
-          </Link>
-        </li>
-      );
-    })}
-  </ul>
-</div>
+                      <Icon
+                        className={`h-4 w-4 ${
+                          isActive
+                            ? "text-blue-600"
+                            : "text-slate-400 group-hover:text-slate-600"
+                        }`}
+                      />
+
+                      {showExpanded && <span>{item.label}</span>}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
 
         {/* Footer Settings Block */}
@@ -126,9 +123,10 @@ export const CourseHubSidebar = () => {
         >
           <div className="flex items-center gap-2 min-w-0">
             <div className="relative h-7 w-7 shrink-0 rounded-full bg-slate-100 ring-1 ring-slate-200/50">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80"
                 alt="Avatar"
+                fill
                 className="h-full w-full rounded-full object-cover"
               />
               <span className="absolute bottom-0 right-0 h-1.5 w-1.5 rounded-full bg-emerald-500 ring-1 ring-white" />
@@ -137,14 +135,14 @@ export const CourseHubSidebar = () => {
               <div className="flex flex-col min-w-0">
                 <div className="flex items-center gap-1">
                   <span className="truncate text-xs font-semibold tracking-tight text-slate-800">
-                   {user?.name}
+                    {user?.name}
                   </span>
                   <span className="inline-flex items-center rounded bg-blue-50 px-1 py-0.5 text-[9px] font-medium text-blue-600 border border-blue-100/30 uppercase tracking-wide">
                     {user?.role}
                   </span>
                 </div>
                 <span className="truncate text-[10px] text-slate-400">
-                 {user?.email}
+                  {user?.email}
                 </span>
               </div>
             )}
@@ -175,15 +173,15 @@ export const CourseHubSidebar = () => {
         Hides completely on desktop (lg:hidden).
         Uses screen-level viewport tracking (`fixed top-4 left-4`) and high z-index stack rules to guarantee visibility.
       */}
-  <div className="fixed top-18 right-8 z-50 lg:hidden block">
-  <button
-    onClick={() => setIsMobileOpen(true)}
-    className="flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200/80 bg-white text-slate-700 shadow-md transition-all active:scale-95 focus:outline-none"
-    aria-label="Open sidebar drawer"
-  >
-    <Menu className="h-5.5 w-5.5" />
-  </button>
-</div>
+      <div className="fixed top-18 right-8 z-50 lg:hidden block">
+        <button
+          onClick={() => setIsMobileOpen(true)}
+          className="flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200/80 bg-white text-slate-700 shadow-md transition-all active:scale-95 focus:outline-none"
+          aria-label="Open sidebar drawer"
+        >
+          <Menu className="h-5.5 w-5.5" />
+        </button>
+      </div>
 
       {/* Mobile-Only Drawer Pop-Out */}
       <AnimatePresence>
@@ -219,7 +217,6 @@ export const CourseHubSidebar = () => {
         )}
       </AnimatePresence>
 
-      
       <motion.aside
         animate={{
           width: isCollapsed ? 72 : 280,
@@ -258,4 +255,4 @@ export const CourseHubSidebar = () => {
   );
 };
 
-export default CourseHubSidebar
+export default CourseHubSidebar;
