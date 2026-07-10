@@ -35,12 +35,7 @@ export const studentNavigation: NavigationItem[] = [
     icon: BookOpen,
     path: "/dashboard/student/my-courses",
   },
-  {
-    id: "my-learning",
-    label: "My Learning",
-    icon: GraduationCap,
-    path: "/dashboard/student/my-learning",
-  },
+  
   {
     id: "assignments",
     label: "Assignments",
@@ -59,12 +54,7 @@ export const studentNavigation: NavigationItem[] = [
     icon: User,
     path: "/dashboard/student/profile",
   },
-  {
-    id: "settings",
-    label: "Settings",
-    icon: Settings,
-    path: "/dashboard/student/settings",
-  },
+ 
 ];
 
 export const instructorNavigation: NavigationItem[] = [
@@ -104,12 +94,7 @@ export const instructorNavigation: NavigationItem[] = [
     icon: User,
     path: "/dashboard/instructor/profile",
   },
-  {
-    id: "settings",
-    label: "Settings",
-    icon: Settings,
-    path: "/dashboard/instructor/settings",
-  },
+
 ];
 
 export const adminNavigation: NavigationItem[] = [
@@ -155,10 +140,5 @@ export const adminNavigation: NavigationItem[] = [
     icon: User,
     path: "/dashboard/admin/profile",
   },
-  {
-    id: "settings",
-    label: "Settings",
-    icon: Settings,
-    path: "/dashboard/admin/settings",
-  },
+
 ];

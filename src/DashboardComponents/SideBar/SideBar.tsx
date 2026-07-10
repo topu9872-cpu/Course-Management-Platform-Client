@@ -19,7 +19,7 @@ import Link from "next/link";
 
 const user = { role: "admin" ,name:'topu', email:'topu@example.com' };
 const navigation =
-  user?.role === "admin"
+  user?.role === "student"
     ? adminNavigation
     : user?.role === "instructor"
       ? instructorNavigation
