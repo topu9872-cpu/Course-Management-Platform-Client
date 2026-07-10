@@ -12,6 +12,7 @@ import {
   ArrowRight,
   ChevronRight,
 } from "lucide-react";
+import Link from "next/link";
 
 const FEATURES = [
   {
@@ -103,8 +104,8 @@ const WhyChooseUs = () => {
               <p className="text-gray-600 text-sm leading-relaxed mb-6">
                 {feature.description}
               </p>
-              <div className="flex items-center text-blue-600 font-semibold text-sm group-hover:translate-x-1 transition-transform">
-                Learn more <ArrowRight size={16} className="ml-2" />
+              <div className=" text-blue-600 font-semibold text-sm group-hover:translate-x-1 transition-transform">
+               <Link className="flex items-center" href="/about"> Learn more <ArrowRight size={16} className="ml-2" /></Link>
               </div>
             </motion.div>
           ))}
@@ -117,7 +118,7 @@ const WhyChooseUs = () => {
             whileTap={{ scale: 0.98 }}
             className="inline-flex items-center px-8 py-4 bg-white border border-gray-200 rounded-full font-semibold text-gray-900 hover:border-gray-900 transition-colors"
           >
-            Explore All Features
+           <Link href="/courses"> Explore Courses </Link>
             <ChevronRight size={18} className="ml-2" />
           </motion.button>
         </div>

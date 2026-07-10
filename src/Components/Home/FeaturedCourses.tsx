@@ -4,18 +4,7 @@ import React, { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import AllCards from "../AllCards/AllCards";
 
-interface Course {
-  id: number;
-  image: string;
-  title: string;
-  description: string;
-  price: string;
-  date: string;
-  rating: number;
-  location: string;
-}
-
-const COURSES: Course[] = [
+const COURSES = [
   { id: 1, image: "bg-blue-100", title: "Full Stack Development", description: "Master modern web stacks.", price: "$199", date: "Jul 15", rating: 4.9, location: "Online" },
   { id: 2, image: "bg-indigo-100", title: "React Next.js Pro", description: "Deep dive into App Router.", price: "$179", date: "Aug 02", rating: 4.8, location: "Remote" },
   { id: 3, image: "bg-sky-100", title: "TypeScript Mastery", description: "Advanced type safety patterns.", price: "$149", date: "Aug 10", rating: 4.9, location: "Online" },

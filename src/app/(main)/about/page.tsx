@@ -1,9 +1,10 @@
+import AboutUsPage from "@/Components/AboutUsPage/AboutUsPage";
 
 
 const AboutPage = () => {
   return (
-    <main className="w-11/12 mx-auto">
-        about
+    <main className="mx-auto">
+       <AboutUsPage/>
     </main>
   );
 };

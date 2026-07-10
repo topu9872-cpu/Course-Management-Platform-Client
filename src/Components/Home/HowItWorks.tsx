@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { UserPlus, BookOpen, MonitorPlay, Award, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 const STEPS = [
   {
@@ -46,7 +47,7 @@ const cardVariants = {
 
 const HowItWorks: React.FC = () => {
   return (
-    <section className="py-24 bg-white relative overflow-hidden">
+    <section className=" bg-white relative overflow-hidden">
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         {/* Header */}
         <div className="text-center mb-20">
@@ -93,16 +94,22 @@ const HowItWorks: React.FC = () => {
         </motion.div>
 
         {/* Bottom CTA */}
-        <div className="text-center mt-20">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center px-8 py-4 bg-gray-900 text-white rounded-full font-semibold hover:bg-blue-600 transition-colors shadow-lg shadow-gray-200"
-          >
-            Start Learning Today
-            <ArrowRight size={18} className="ml-2" />
-          </motion.button>
-        </div>
+       <div className="text-center mt-20">
+ <Link href="/courses" className="inline-block">
+  <motion.div
+    whileHover={{ scale: 1.03, y: -2 }}
+    whileTap={{ scale: 0.98 }}
+    className="group inline-flex items-center gap-2 rounded-full bg-blue-600 px-7 py-3.5 font-semibold text-white shadow-lg shadow-blue-600/20 transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-600/30"
+  >
+    <span>Start Learning Today</span>
+
+    <ArrowRight
+      size={18}
+      className="transition-transform duration-300 group-hover:translate-x-1"
+    />
+  </motion.div>
+</Link>
+</div>
       </div>
     </section>
   );

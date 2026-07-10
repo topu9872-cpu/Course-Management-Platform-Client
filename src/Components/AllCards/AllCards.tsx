@@ -1,6 +1,7 @@
 'use client'
 import { motion } from "framer-motion";
 import { Star, MapPin, CalendarDays } from "lucide-react";
+import Link from "next/link";
 
 interface Course {
   id: number;
@@ -35,9 +36,9 @@ const AllCards = ({course}:{course:Course}) => {
                       <span className="flex items-center gap-1 justify-end font-bold text-gray-800"><Star size={10} className="fill-yellow-400 text-yellow-400"/>{course.rating}</span>
                     </div>
 
-                    <button className="mt-auto w-full py-2 rounded-lg bg-gray-50 text-[11px] font-bold text-gray-700 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <Link href={`/courses/${course.id}`} className="mt-auto text-center w-full py-2 rounded-lg bg-gray-50 text-[11px] font-bold text-gray-700 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                       View Details
-                    </button>
+                    </Link>
                   </div>
                 </motion.div>
     </div>

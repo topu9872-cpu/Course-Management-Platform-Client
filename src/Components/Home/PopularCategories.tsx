@@ -150,7 +150,7 @@ const PopularCategories: React.FC = () => {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center px-8 py-4 bg-gray-900 text-white rounded-full font-semibold hover:bg-blue-600 transition-colors shadow-lg shadow-gray-200"
+            className="inline-flex items-center px-8 py-4 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-600 transition-colors shadow-lg shadow-gray-200"
           >
             <Link href="/courses">Browse All Categories</Link>
             <ArrowRight size={18} className="ml-2" />
