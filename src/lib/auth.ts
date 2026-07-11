@@ -15,11 +15,14 @@ export const auth = betterAuth({
       role: {
         type: "string",
         required: false,
-  
+        input: true, 
+      },
+       subscription: {
+        type: "string",
+        required: false,
         input: true, 
       },
     },
   },
-
   plugins: [], 
 });

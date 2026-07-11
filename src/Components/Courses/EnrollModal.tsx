@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 
-export default function EnrollButton() {
+export default function EnrollButton({detailsData}:any) {
   const [open, setOpen] = useState(false);
 
   const handleEnroll = () => {

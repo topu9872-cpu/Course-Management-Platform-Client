@@ -5,30 +5,38 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Send, Mail, Phone, MapPin, Clock } from "lucide-react";
 
-import {
-  FaGithub,
-  FaLinkedin,
-  FaFacebook,
-} from "react-icons/fa6";
+import { FaGithub, FaLinkedin, FaFacebook } from "react-icons/fa6";
 
 import { toast } from "sonner";
+import { Subcribeing } from "@/app/api/ServerAction";
+import { authClient } from "@/lib/auth-client";
+
+type userInfo = {
+  name: string;
+  email: string;
+};
 
 const Footer: React.FC = () => {
   const socialLinks = [
     { Icon: FaGithub, href: "https://github.com/topu9872-cpu" },
     { Icon: FaLinkedin, href: "www.linkedin.com/in/mehedi-hasan-topu" },
-    { Icon: FaFacebook, href: "https://www.facebook.com/profile.php?id=61578488636020" },
+    {
+      Icon: FaFacebook,
+      href: "https://www.facebook.com/profile.php?id=61578488636020",
+    },
   ];
 
   const platformLinks = [
-  { label: "Home", href: "/" },
-  { label: "Explore Courses", href: "/courses" },
-  { label: "Categories", href: "/categories" },
-  { label: "Pricing", href: "/pricing" },
+    { label: "Home", href: "/" },
+    { label: "Explore Courses", href: "/courses" },
+    { label: "Categories", href: "/categories" },
+    { label: "Pricing", href: "/pricing" },
+  ];
 
-];
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
 
-  const handleSubscribe = () => {
+  const handleSubscribe = async () => {
     toast.success("Thanks for subscribing!", {
       style: {
         background: "#ffffff",
@@ -37,6 +45,7 @@ const Footer: React.FC = () => {
         borderRadius: "12px",
       },
     });
+    await Subcribeing({ name: user?.name, email: user?.email } as userInfo);
   };
 
   return (
@@ -66,8 +75,8 @@ const Footer: React.FC = () => {
                 placeholder="Enter your email"
                 className="w-full bg-transparent px-4 py-3 outline-none text-slate-700"
               />
-              <button 
-                onClick={handleSubscribe} 
+              <button
+                onClick={handleSubscribe}
                 className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 font-semibold text-white transition-all hover:bg-blue-700 hover:scale-105"
               >
                 <Send size={16} />
@@ -79,22 +88,21 @@ const Footer: React.FC = () => {
         {/* Middle Section */}
         <div className="grid grid-cols-1 gap-12 py-12 sm:grid-cols-2 lg:grid-cols-4 border-b border-slate-100">
           {/* Platform Links */}
-          
-            <div className="space-y-4">
-  <h3 className="font-bold text-slate-900">Platform</h3>
-  <ul className="space-y-3 text-slate-600">
-    {platformLinks.map((item) => (
-      <li key={item.label}>
-        <Link 
-          href={item.href} 
-          className="hover:text-blue-600 transition-colors"
-        >
-          {item.label}
-        </Link>
-      </li>
-    ))}
-  </ul>
 
+          <div className="space-y-4">
+            <h3 className="font-bold text-slate-900">Platform</h3>
+            <ul className="space-y-3 text-slate-600">
+              {platformLinks.map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    className="hover:text-blue-600 transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Company Links */}
@@ -103,7 +111,10 @@ const Footer: React.FC = () => {
             <ul className="space-y-3 text-slate-600">
               {["About Us", "Contact", "Blog", "Careers", "FAQ"].map((item) => (
                 <li key={item}>
-                  <Link href="#" className="hover:text-blue-600 transition-colors">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-600 transition-colors"
+                  >
                     {item}
                   </Link>
                 </li>
@@ -123,7 +134,10 @@ const Footer: React.FC = () => {
                 "Report an Issue",
               ].map((item) => (
                 <li key={item}>
-                  <Link href="#" className="hover:text-blue-600 transition-colors">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-600 transition-colors"
+                  >
                     {item}
                   </Link>
                 </li>
@@ -148,7 +162,7 @@ const Footer: React.FC = () => {
                 <Clock size={16} /> Mon - Fri: 9am - 6pm
               </p>
             </div>
-            
+
             {/* Social Icons Container */}
             <div className="flex gap-3 pt-2">
               {socialLinks.map(({ Icon, href }, i) => (

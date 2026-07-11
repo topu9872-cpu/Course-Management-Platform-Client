@@ -25,6 +25,8 @@ export default function SimpleSearchFilterBar() {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
 
+
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-6 bg-white antialiased">
       <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
@@ -35,10 +37,7 @@ export default function SimpleSearchFilterBar() {
             type="text"
             value={searchQuery}
             onChange={(e) => {
-              const value = e.target.value;
-              setSearchQuery(value);
-              params.set("search", value);
-              router.push(`courses?${params.toString()}`);
+              setSearchQuery(e.target.value);
             }}
             placeholder="Search courses, instructors, or categories..."
             className="w-full pl-12 pr-28 py-3 text-sm text-neutral-900 bg-white border border-neutral-200 rounded-lg shadow-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500"
@@ -51,7 +50,10 @@ export default function SimpleSearchFilterBar() {
               <X className="w-4 h-4" />
             </button>
           )}
-          <button className="absolute right-1.5 px-4 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-md transition-colors shadow-sm">
+          <button onClick={()=>{
+            params.set('search',searchQuery)
+            router.push(`/courses?${params.toString()}`)
+          }} className="absolute right-0 px-4 py-3 font-bold text-sm  text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-md transition-colors shadow-sm">
             Search
           </button>
         </div>
@@ -97,9 +99,7 @@ export default function SimpleSearchFilterBar() {
                 const value = e.target.value;
                 setCategory(value);
                 params.set("category", value);
-                router.push(
-                  `/courses?${params.toString()}`,
-                );
+                router.push(`/courses?${params.toString()}`);
               }}
               className={`w-full appearance-none pl-3 pr-8 py-2 text-sm font-medium rounded-lg border transition-all cursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 ${
                 category
@@ -120,7 +120,6 @@ export default function SimpleSearchFilterBar() {
           </div>
 
           {/* Difficulty Filter */}
-          
 
           {/* Price Filter */}
           <div className="relative flex-1 sm:flex-initial">

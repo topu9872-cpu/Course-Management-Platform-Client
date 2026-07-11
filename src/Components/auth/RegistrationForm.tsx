@@ -7,19 +7,21 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
 import ImageBB from "../UI/ImageBB";
+import { emailPost } from "@/app/api/ServerAction";
 
 const RegisterPage = () => {
-  const [userRole, setRole] = useState("student");
+  const [Role, setRole] = useState("student");
   const [visible, setVisible] = useState(false);
   const [image, setImage] = useState<File | null>(null);
   const route = useRouter();
-
+  const userSub = Role === "student" ? "student_free" : null;
   interface formInfo {
     email: string;
     password: string;
     name: string;
     role: string;
     image: any;
+    subscription: string;
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,10 +35,12 @@ const RegisterPage = () => {
       password: formData.password,
       name: formData.name,
       image: imageUrl,
-      role: userRole,
+      role: Role,
+      subscription: userSub,
     });
 
     if (data) {
+      route.push("/");
       toast.success("Account Created", {
         style: {
           background: "#ffffff",
@@ -44,7 +48,10 @@ const RegisterPage = () => {
           border: "1px solid #bfdbfe",
         },
       });
-      route.push("/");
+      await emailPost({
+        email: data.user.email,
+        name: data.user.name,
+      });
     }
     if (error) {
       toast.error("Failed to create account", {
@@ -54,7 +61,6 @@ const RegisterPage = () => {
           border: "1px solid #bfdbfe",
         },
       });
-     
     }
   };
 
@@ -140,7 +146,7 @@ const RegisterPage = () => {
               type="button"
               onClick={() => setRole("student")}
               className={`py-2 text-sm font-semibold rounded-md transition-all ${
-                userRole === "student"
+                Role === "student"
                   ? "bg-blue-600 text-white shadow-sm"
                   : "text-gray-600 hover:text-gray-800"
               }`}
@@ -151,7 +157,7 @@ const RegisterPage = () => {
               type="button"
               onClick={() => setRole("instructor")}
               className={`py-2 text-sm font-semibold rounded-md transition-all ${
-                userRole === "instructor"
+                Role === "instructor"
                   ? "bg-blue-600 text-white shadow-sm"
                   : "text-gray-600 hover:text-gray-800"
               }`}

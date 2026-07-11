@@ -1,4 +1,4 @@
-import { getData } from "./ServerMutation";
+import { getData, postData } from "./ServerMutation";
 
 export const getCoursesData = async (query: {
   page?: string;
@@ -18,6 +18,21 @@ export const getCoursesData = async (query: {
   return getData("/courses", params.toString());
 };
 
-export const getHomeCoursesData=async()=>{
-  return getData('/home-courses-data')
-}
+export const getHomeCoursesData = async () => {
+  return getData("/home-courses-data");
+};
+
+export const getDetailsData = async (id: Number) => {
+  return getData(`/courses/${id}`);
+};
+type EmailInfo = {
+  email: string;
+  name: string;
+};
+
+export const emailPost = async (data: EmailInfo) => {
+  return postData("/send-email", data);
+};
+export const Subcribeing = async (data: EmailInfo) => {
+  return postData("/subcribe", data);
+};

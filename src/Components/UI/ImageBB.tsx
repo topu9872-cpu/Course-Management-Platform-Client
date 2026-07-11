@@ -1,5 +1,5 @@
 export const ImageBB = async (file: File) => {
-  if (!file) throw new Error("image file is requred");
+
   const formData=new FormData()
   formData.append('image',file)
 
