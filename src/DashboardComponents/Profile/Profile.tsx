@@ -1,299 +1,498 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast, Toaster } from "sonner";
-import { 
-  User, Mail, Phone, MapPin, Calendar, Clock, Key, Download, 
-  LogOut, Shield, Award, Edit3, Save, Camera, CheckCircle, 
-  Activity, BookOpen, Briefcase, Command, ChevronRight 
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Key,
+  Download,
+  LogOut,
+  Shield,
+  Award,
+  Edit3,
+  Save,
+  Camera,
+  ChevronRight,
 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
-// --- MOCK USER DATA OBJECT ---
-const MOCK_USER_DATA = {
-  student: {
-    role: "Student",
-    image:'ifja',
-    name: "Topu Ahmed",
-    username: "topu_dev",
-    email: "topu@example.com",
-    phone: "+880 1712-345678",
-    dob: "2002-05-14",
-    gender: "Male",
-    address: "Dhaka, Bangladesh",
-    joined: "2025-09-12",
-    lastLogin: "2026-07-10 23:45",
-    id: "USR-9901-ST",
-    bio: "Passionate full-stack developer focusing on the MERN stack and Next.js. Constantly building and exploring interactive UI web dynamics.",
-    skills: ["React", "Next.js", "Tailwind CSS", "TypeScript", "Node.js"],
-    specializedSection: { title: "Learning Goals", content: "Master scalable distributed systems architecture, advanced database sharding, and clean microservices engineering." },
-    timeline: [
-      { action: "Completed Course", text: "Advanced Production Architecture & Next.js", time: "2 hours ago" },
-      { action: "Updated Profile", text: "Modified biographical baseline data frameworks", time: "1 day ago" },
-      { action: "Logged In", text: "Secure auth handshake established via Windows Client", time: "Yesterday" }
-    ]
-  },
-  instructor: {
-    role: "Instructor",
-    name: "Dr. Sarah Jenkins",
-    image:'jfao,',
-    username: "s_jenkins",
-    email: "s.jenkins@platform.edu",
-    phone: "+1 (555) 234-5678",
-    dob: "1988-11-23",
-    gender: "Female",
-    address: "San Francisco, CA",
-    joined: "2024-02-10",
-    lastLogin: "2026-07-10 22:15",
-    id: "USR-4432-INS",
-    bio: "Senior Software Architect and computer science educator. Dedicated to breaking down complex infrastructure concepts into modular visual journeys.",
-    skills: ["Microservices", "System Design", "Cloud Native", "Kubernetes", "GraphQL"],
-    specializedSection: { title: "Teaching Expertise", content: "Enterprise Application Paradigms, State Synchronizations, and Scalable Database Mechanics." },
-    timeline: [
-      { action: "Created Course", text: "Node.js Distributed Microservices Core", time: "3 days ago" },
-      { action: "Graded Assessments", text: "Reviewed 42 engineering capstone submissions", time: "4 days ago" },
-      { action: "Logged In", text: "Established production cluster dashboard connection", time: "Weekly Refresh" }
-    ]
-  },
-  admin: {
-    role: "Admin",
-    name: "Alex Rivera",
-    image:'fjafak',
-    username: "alex_sysadmin",
-    email: "alex.admin@platform.edu",
-    phone: "+1 (555) 987-6543",
-    dob: "1984-03-09",
-    gender: "Non-binary",
-    address: "Austin, TX",
-    joined: "2023-01-15",
-    lastLogin: "2026-07-10 23:51",
-    id: "USR-0012-ADM",
-    bio: "Principal Systems Administrator and security manager. Maintaining structural stability, cluster performance parameters, and cryptographic access tokens.",
-    skills: ["Security Architecture", "CI/CD Pipelines", "IAM Policies", "Serverless Infrastructure", "Compliance"],
-    specializedSection: { title: "Management Role", content: "Global identity access control orchestration, database migration monitoring, and security audit vector logs." },
-    timeline: [
-      { action: "Managed Users", text: "Granted instructor matrix access tokens to verified nodes", time: "1 hour ago" },
-      { action: "System Patch", text: "Deployed Next.js App Router route-cache integrity script", time: "5 hours ago" },
-      { action: "Logged In", text: "Root authentication override verified securely", time: "Just now" }
-    ]
-  }
-};
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 
+import Image from "next/image";
+import { ImageBB } from "@/Components/UI/ImageBB";
 const Profile = () => {
-  // Toggle between mock roles to display layout flexibility
-  const [activeRole, setActiveRole] = useState<"student" | "instructor" | "admin">("student");
+  const [date, setDate] = useState<any | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user as any;
+  console.log(user);
+  useEffect(() => {
+    if (user?.bath) {
+      setDate(new Date(user.bath));
+    }
+  }, [user]);
+  // 1. Fetch Session from better-auth
+
   const [isEditing, setIsEditing] = useState(false);
-  const data = MOCK_USER_DATA[activeRole];
+  const [form, setForm] = useState<any>({});
 
-  const handleUpdateProfile = () => {
-    setIsEditing(false);
-    toast.success("Profile Parameters Saved", { description: "Local modification payload synchronized with production database cores successfully." });
+  // 2. Sync DB user data to local form state once it loads
+  useEffect(() => {
+    if (user) {
+      setForm({
+        name: user?.name || "",
+        username: user?.username || "",
+        image: imageFile,
+        email: user?.email || "",
+        phone: user?.phone || "",
+        bath: user?.bath || "",
+        gender: user?.gender || "",
+        bio: user?.bio || "",
+        skills: user?.skills,
+      });
+    }
+  }, [user]);
+
+  const saveProfile = async () => {
+    try {
+      let image = user?.image;
+
+      if (imageFile) {
+        image = await ImageBB(imageFile);
+      }
+      const { data, error } = await authClient.updateUser({
+        name: form.name,
+        username: form.username,
+        phone: form.phone,
+        bath: date,
+        gender: form.gender,
+        bio: form.bio,
+        image: image,
+        skills: form.skills,
+      });
+      if (error) {
+        toast.error(error.message || "Failed to update profile parameters");
+        return;
+      }
+      if (data) {
+        setIsEditing(false);
+        toast.success("Profile Parameters Saved", {
+          description:
+            "Local modification payload synchronized with production database.",
+        });
+      }
+    } catch (err) {
+      toast.error("System Error: Could not synchronize profile updates.");
+    }
   };
 
-  const triggerUploadUI = () => {
-    toast.info("Avatar Upload Frame Engaged", { description: "Mock image pipeline triggered. Secure cloud object bucket waiting for binary data upload parameters." });
+  const toggleEdit = () => {
+    if (isEditing && user) {
+      // Revert form back to original user data if cancelled
+      setForm({
+        ...user,
+        skills: user?.skills.join(", "),
+      });
+    }
+    setIsEditing(!isEditing);
   };
 
-  const triggerPasswordChange = () => {
-    toast.warning("Secure Token Reset Dispatched", { description: "An authenticated password resetting sequence email block link has been generated." });
+  const handleLogout = async () => {
+    await authClient.signOut();
+    toast.error("Session Severed", {
+      description:
+        "Terminated active web token. Relocating routing focus back to authentication portal.",
+    });
   };
 
-  const triggerProfileDownload = () => {
-    toast.success("Profile Package Created", { description: "Successfully encrypted and downloaded personal metadata profile history as a clean schema JSON file." });
+  if (isPending) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span className="loading loading-spinner text-primary"></span>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-rose-500 font-bold">
+        Authentication Required. Node access denied.
+      </div>
+    );
+  }
+  const displayData = {
+    ...user,
+    role: user?.role || "Student",
+    address: user?.address || "Earth",
+
+    specializedSection: user?.specializedSection || {
+      title: "Learning Goals",
+      content:
+        "Master scalable distributed systems architecture, advanced database sharding, and clean microservices engineering.",
+    },
   };
+  const ActionBtn = ({ Icon, color, label, onClick }: any) => (
+    <button
+      onClick={onClick}
+      className="w-full inline-flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition-all group"
+    >
+      <span className="flex items-center gap-2">
+        <Icon className={`h-4 w-4 text-slate-400 group-hover:${color}`} />{" "}
+        {label}
+      </span>
+      <ChevronRight className="h-3.5 w-3.5 text-slate-300" />
+    </button>
+  );
 
-  const triggerLogout = () => {
-    toast.error("Session Severed", { description: "Terminated active web token storage parameters. Relocating routing focus back to authentication portal." });
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
-
-  // Preview
-  const preview = URL.createObjectURL(file);
-
-  // setData({ ...data, image: preview });
-};
-
-const fileInputRef = React.useRef<HTMLInputElement>(null);
   return (
     <div className="min-h-screen bg-slate-50/60 text-slate-900 antialiased font-sans px-4 py-8 sm:px-6 lg:px-8">
       <Toaster position="top-right" richColors closeButton />
 
       <div className="max-w-6xl mx-auto space-y-6">
-        
-        {/* ROLE SIMULATION BAR */}
-      
-
-        {/* PAGE HEADER */}
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-sm space-y-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-                <User className="h-6 w-6 text-blue-600" /> My Profile
-              </h1>
-              <p className="text-xs text-slate-500 mt-0.5">Manage personal parameters, operational contexts, and infrastructure verification statuses.</p>
-            </div>
-            <button 
-              onClick={() => setIsEditing(!isEditing)}
-              className={`inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl transition-all shadow-xs ${isEditing ? "bg-slate-100 text-slate-700 hover:bg-slate-200" : "bg-blue-600 text-white hover:bg-blue-700"}`}
-            >
-              {isEditing ? <><Save className="h-3.5 w-3.5" /> Cancel</> : <><Edit3 className="h-3.5 w-3.5" /> Edit Profile</>}
-            </button>
+        {/* HEADER */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+        >
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+              <User className="h-6 w-6 text-blue-600" /> My Profile
+            </h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Manage personal parameters, operational contexts, and
+              infrastructure verification statuses.
+            </p>
           </div>
+          <button
+            onClick={toggleEdit}
+            className={`inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl transition-all shadow-xs ${isEditing ? "bg-slate-100 text-slate-700 hover:bg-slate-200" : "bg-blue-600 text-white hover:bg-blue-700"}`}
+          >
+            {isEditing ? (
+              <>
+                <Save className="h-3.5 w-3.5" /> Cancel
+              </>
+            ) : (
+              <>
+                <Edit3 className="h-3.5 w-3.5" /> Edit Profile
+              </>
+            )}
+          </button>
         </motion.div>
 
-        {/* PROFILE SPLIT VIEW WORKSPACE */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-          
-          {/* LEFT: IDENTIFIER AVATAR CARD & QUICK ACTIONS */}
+          {/* LEFT: AVATAR & QUICK ACTIONS */}
           <div className="space-y-6">
-       
-<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 text-center space-y-4">
-  <div className="relative group w-24 h-24 mx-auto">
-    {/* Avatar Preview */}
-    <div className="w-full h-full rounded-full bg-blue-600 flex items-center justify-center text-white text-3xl font-bold uppercase tracking-wider shadow-inner group-hover:scale-105 transition-transform duration-300">
-      {data.name.split(" ").map(n => n[0]).join("")}
-    </div>
-    
-    {/* Hidden File Input */}
-    <input 
-      type="file" 
-      ref={fileInputRef} 
-      className="hidden" 
-      accept="image/*"
-      onChange={(e) => {
-        if (e.target.files && e.target.files[0]) {
-          triggerUploadUI(); // Your existing upload logic
-        }
-      }}
-    />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 text-center space-y-4"
+            >
+              <div className="relative group w-24 h-24 mx-auto">
+                {user?.image ? (
+                  <Image
+                    width={100}
+                    height={100}
+                    src={user?.image}
+                    alt={displayData.name}
+                    className="w-full h-full rounded-full object-cover shadow-inner group-hover:scale-105 transition-transform"
+                  />
+                ) : (
+                  <div className="w-full h-full rounded-full bg-blue-600 flex items-center justify-center text-white text-3xl font-bold uppercase tracking-wider shadow-inner group-hover:scale-105 transition-transform">
+                    {(displayData.name || "U")
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")
+                      .substring(0, 2)}
+                  </div>
+                )}
 
-    {/* Trigger Button */}
-    <button 
-      onClick={() => fileInputRef.current?.click()} 
-      className="absolute bottom-0 right-0 p-1.5 bg-white border border-slate-200 text-slate-600 rounded-full shadow-md hover:text-blue-600 hover:scale-110 transition-all" 
-      title="Upload Metadata Photo"
-    >
-      <Camera className="h-3.5 w-3.5" />
-    </button>
-  </div>
+                <div className="relative group w-24 h-24 mx-auto">
+                  {/* The Label acts as the container for both */}
+                  <label className="cursor-pointer">
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
 
-  <div className="space-y-1">
-    <h2 className="text-base font-bold text-slate-900 tracking-tight">{data.name}</h2>
-    <p className="text-xs text-slate-400 font-medium font-mono">@{data.username}</p>
-  </div>
+                        if (file) {
+                          setImageFile(file);
+                        }
+                      }}
+                    />
 
-  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">
-    <Shield className="h-3.5 w-3.5" /> {data.role} Node
-  </div>
+                    {/* The Icon inside the label */}
+                    <div className="absolute -top-7 right-0  bg-white border border-slate-200 text-slate-600 rounded-full shadow-md hover:text-blue-600 hover:scale-110 transition-all">
+                      <Camera className="h-5 w-5" />
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <h2 className="text-base font-bold text-slate-900 tracking-tight">
+                  {displayData.name}
+                </h2>
+                <p className="text-xs text-slate-400 font-medium font-mono">
+                  @{displayData.username || "anonymous_node"}
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">
+                <Shield className="h-3.5 w-3.5" /> {displayData.role} Node
+              </div>
+              <div className="pt-2 space-y-2 text-[11px] font-semibold text-slate-500 border-t border-slate-50 text-left">
+                <div className="flex items-center gap-2">
+                  <Mail className="h-3.5 w-3.5 text-slate-400" />{" "}
+                  {displayData.email}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="h-3.5 w-3.5 text-slate-400" />{" "}
+                  {displayData.phone || "No telemetry linked"}
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-3.5 w-3.5 text-slate-400" />{" "}
+                  {displayData.address}
+                </div>
+              </div>
+            </motion.div>
 
-  <div className="pt-2 space-y-2 text-[11px] font-semibold text-slate-500 border-t border-slate-50 text-left">
-    <div className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-slate-400" /> {data.email}</div>
-    <div className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-slate-400" /> {data.phone}</div>
-    <div className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-slate-400" /> {data.address}</div>
-  </div>
-</motion.div>
-
-            {/* QUICK ACTIONS INFRASTRUCTURE CONTAINER */}
             <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm space-y-2">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-1">Quick Action Operations</h3>
-              <button onClick={() => setIsEditing(!isEditing)} className="w-full inline-flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition-all group">
-                <span className="flex items-center gap-2"><Edit3 className="h-4 w-4 text-slate-400 group-hover:text-blue-500" /> Toggle Parameter Editor</span>
-                <ChevronRight className="h-3.5 w-3.5 text-slate-300" />
-              </button>
-              <button onClick={triggerPasswordChange} className="w-full inline-flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition-all group">
-                <span className="flex items-center gap-2"><Key className="h-4 w-4 text-slate-400 group-hover:text-amber-500" /> Change Security Password</span>
-                <ChevronRight className="h-3.5 w-3.5 text-slate-300" />
-              </button>
-              <button onClick={triggerProfileDownload} className="w-full inline-flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition-all group">
-                <span className="flex items-center gap-2"><Download className="h-4 w-4 text-slate-400 group-hover:text-emerald-500" /> Export Personal Metadata</span>
-                <ChevronRight className="h-3.5 w-3.5 text-slate-300" />
-              </button>
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-1">
+                Quick Action Operations
+              </h3>
+              <ActionBtn
+                Icon={Edit3}
+                color="text-blue-500"
+                label="Toggle Parameter Editor"
+                onClick={() => !isEditing && setIsEditing(true)}
+              />
+              <ActionBtn
+                Icon={Key}
+                color="text-amber-500"
+                label="Change Security Password"
+                onClick={() =>
+                  toast.warning("Secure Token Reset Dispatched", {
+                    description:
+                      "An authenticated password resetting link has been generated.",
+                  })
+                }
+              />
+              <ActionBtn
+                Icon={Download}
+                color="text-emerald-500"
+                label="Export Personal Metadata"
+                onClick={() =>
+                  toast.success("Profile Package Created", {
+                    description:
+                      "Successfully downloaded personal metadata as a clean schema JSON.",
+                  })
+                }
+              />
               <div className="pt-2 border-t border-slate-100">
-                <button onClick={triggerLogout} className="w-full inline-flex items-center gap-2 p-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-bold transition-all">
+                <button
+                  onClick={handleLogout}
+                  className="w-full inline-flex items-center gap-2 p-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-bold transition-all"
+                >
                   <LogOut className="h-4 w-4" /> Sever Session Connection
                 </button>
               </div>
             </div>
           </div>
 
-          {/* RIGHT: MAIN PROFILE BIOMETRIC DATA & TIMELINE FIELDS */}
+          {/* RIGHT: PROFILE DATA */}
           <div className="lg:col-span-2 space-y-6">
-            
-            {/* ABOUT & ADAPTIVE ROLE DESCRIPTION OBJECTS */}
-            <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm space-y-4">
-              <div className="space-y-1">
-                <h3 className="text-sm font-bold text-slate-900 tracking-tight">Biography Baseline</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">{data.bio || "No biography string sequence defined in current profile parameters."}</p>
-              </div>
-
-              {/* Skills and Specialties Array Mapping */}
+            <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm space-y-5">
               <div className="space-y-2">
-                <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Expertise Architecture</h4>
-                <div className="flex flex-wrap gap-1.5">
-                  {data.skills.map((skill, i) => (
-                    <span key={i} className="text-[11px] font-semibold bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-lg border border-slate-200/40">{skill}</span>
-                  ))}
-                </div>
+                <h3 className="text-sm font-bold text-slate-900 tracking-tight">
+                  Biography Baseline
+                </h3>
+                {isEditing ? (
+                  <textarea
+                    value={form.bio || ""}
+                    onChange={(e) => setForm({ ...form, bio: e.target.value })}
+                    rows={3}
+                    className="w-full text-xs font-medium px-3 py-2 border border-blue-500 rounded-xl focus:outline-none transition-all resize-none"
+                    placeholder="Enter your biography sequence..."
+                  />
+                ) : (
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    {displayData.bio || "No biography string sequence defined."}
+                  </p>
+                )}
               </div>
 
-              {/* Dynamic Role Feature Frame */}
-              <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-xl space-y-1">
-                <h4 className="text-xs font-bold text-blue-700 flex items-center gap-1.5">
-                  <Award className="h-3.5 w-3.5" /> {data.specializedSection.title} Vector
+              <div className="space-y-2">
+                <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  Expertise Architecture
                 </h4>
-                <p className="text-xs text-slate-600 font-medium leading-relaxed">{data.specializedSection.content}</p>
+                {isEditing ? (
+                  <input
+                    defaultValue={user?.skills}
+                    type="text"
+                    value={form.skills || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, skills: e.target.value })
+                    }
+                    className="w-full text-xs font-medium px-3 py-2 border border-blue-500 rounded-xl focus:outline-none transition-all"
+                  />
+                ) : (
+                 <div className="flex flex-wrap gap-1.5">
+  {(form?.skills?.split(" ") ?? [
+  "React",
+  "Next.js",
+  "Tailwind CSS",
+  "TypeScript",
+]).map((skill:string, i:number) => (
+  <div
+    key={i}
+    className="text-[11px] font-semibold bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-lg border border-slate-200/40"
+  >
+    {skill.trim()}
+  
+  </div>
+))}
+</div>
+                )}
+              </div>
+
+              <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-xl space-y-1 mt-2">
+                <h4 className="text-xs font-bold text-blue-700 flex items-center gap-1.5">
+                  <Award className="h-3.5 w-3.5" />{" "}
+                  {displayData.specializedSection.title} Vector
+                </h4>
+                <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                  {displayData.specializedSection.content}
+                </p>
               </div>
             </div>
 
-            {/* PERSONAL INFORMATION FORM SCHEMAS (UI INTERACTION SIMULATOR) */}
-          <div className="flex flex-col items-center gap-4 pb-5 border-b border-slate-200">
- 
-    <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 tracking-tight">Personal Identity Data Model</h3>
+            <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 tracking-tight">
+                Personal Identity Data Model
+              </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Full Identification Name</label>
-                  <input type="text" readOnly={!isEditing} defaultValue={data.name} className={`w-full text-xs font-medium px-3 py-2 border rounded-xl focus:outline-none transition-all ${isEditing ? "border-blue-500 bg-white" : "border-slate-200 bg-slate-50/50 text-slate-600"}`} />
+                <div className="space-y-2">
+                  <label
+                    htmlFor="name"
+                    className="text-sm font-medium text-slate-700"
+                  >
+                    Full Identification Name
+                  </label>
+                  <input
+                    defaultValue={user?.name}
+                    name="name"
+                    type="text"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Username Handle</label>
-                  <input type="text" readOnly={!isEditing} defaultValue={data.username} className={`w-full text-xs font-medium px-3 py-2 border rounded-xl focus:outline-none transition-all ${isEditing ? "border-blue-500 bg-white" : "border-slate-200 bg-slate-50/50 text-slate-600"}`} />
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="username"
+                    className="text-sm font-medium text-slate-700"
+                  >
+                    Username Handle
+                  </label>
+                  <input
+                    defaultValue={user?.username}
+                    name="username"
+                    type="text"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Secure Routing Email</label>
-                  <input type="email" readOnly={!isEditing} defaultValue={data.email} className={`w-full text-xs font-medium px-3 py-2 border rounded-xl focus:outline-none transition-all ${isEditing ? "border-blue-500 bg-white" : "border-slate-200 bg-slate-50/50 text-slate-600"}`} />
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="email"
+                    className="text-sm font-medium text-slate-700"
+                  >
+                    Secure Routing Email
+                  </label>
+                  <input
+                    defaultValue={user?.email}
+                    name="email"
+                    type="email"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Phone Telemetry Code</label>
-                  <input type="text" readOnly={!isEditing} defaultValue={data.phone} className={`w-full text-xs font-medium px-3 py-2 border rounded-xl focus:outline-none transition-all ${isEditing ? "border-blue-500 bg-white" : "border-slate-200 bg-slate-50/50 text-slate-600"}`} />
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="phone"
+                    className="text-sm font-medium text-slate-700"
+                  >
+                    Phone Telemetry Code
+                  </label>
+                  <input
+                    defaultValue={user?.phone}
+                    name="phone"
+                    type="text"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Date of Birth</label>
-                  <input type="date" readOnly={!isEditing} defaultValue={data.dob} className={`w-full text-xs font-medium px-3 py-2 border rounded-xl focus:outline-none transition-all ${isEditing ? "border-blue-500 bg-white" : "border-slate-200 bg-slate-50/50 text-slate-600"}`} />
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="bath"
+                    className="text-sm font-medium text-slate-700"
+                  >
+                    Date of Birth
+                  </label>
+
+                  <DatePicker
+                    selected={date}
+                    onChange={(date: any) => setDate(date)}
+                    dateFormat="yyyy-MM-dd"
+                    showMonthDropdown
+                    showYearDropdown
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={100}
+                    placeholderText="Select Date of Birth"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-2"
+                  />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Gender Context</label>
-                  <input type="text" readOnly={!isEditing} defaultValue={data.gender} className={`w-full text-xs font-medium px-3 py-2 border rounded-xl focus:outline-none transition-all ${isEditing ? "border-blue-500 bg-white" : "border-slate-200 bg-slate-50/50 text-slate-600"}`} />
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="gender"
+                    className="text-sm font-medium text-slate-700"
+                  >
+                    Gender Context
+                  </label>
+                  <input
+                    defaultValue={user?.gender}
+                    name="gender"
+                    type="text"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
               </div>
+
               <AnimatePresence>
                 {isEditing && (
-                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="pt-2 flex justify-end">
-                    <button onClick={handleUpdateProfile} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors flex items-center gap-1.5">
-                      <Save className="h-3.5 w-3.5" /> Save Changes to System
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="pt-4 flex justify-end"
+                  >
+                    <button
+                      onClick={saveProfile}
+                      className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-1.5"
+                    >
+                      <Save className="h-4 w-4" /> Save Changes to System
                     </button>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
-</div>
           </div>
-
         </div>
-
       </div>
     </div>
   );

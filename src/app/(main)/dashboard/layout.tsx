@@ -8,7 +8,7 @@ const Layout = ({ children }:{children: React.ReactNode}) => {
     <main className="min-h-screen bg-slate-50">
       <CourseHubSidebar />
 
-      <section className="pt-20 ml-70">
+      <section className="pt-20  lg:ml-70">
        
           {children}
         

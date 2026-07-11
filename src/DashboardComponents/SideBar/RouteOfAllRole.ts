@@ -83,12 +83,6 @@ export const instructorNavigation: NavigationItem[] = [
     path: "/dashboard/instructor/students",
   },
   {
-    id: "analytics",
-    label: "Analytics",
-    icon: BarChart3,
-    path: "/dashboard/instructor/analytics",
-  },
-  {
     id: "profile",
     label: "Profile",
     icon: User,

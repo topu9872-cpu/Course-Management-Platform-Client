@@ -15,14 +15,49 @@ export const auth = betterAuth({
       role: {
         type: "string",
         required: false,
-        input: true, 
+        input: true,
       },
-       subscription: {
+      subscription: {
         type: "string",
         required: false,
-        input: true, 
+        input: true,
+      },
+      username: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      phone: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      gender: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      address: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      skills: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      bath: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      bio: {
+        type: "string",
+        required: false,
+        input: true,
       },
     },
   },
-  plugins: [], 
+  plugins: [],
 });

@@ -2,10 +2,13 @@
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { toast } from "sonner";
 
 const LoginForm = () => {
   const route = useRouter();
+  const [visible, setVisible] = useState(false);
 
   interface formInfo {
     email: string;
@@ -24,7 +27,6 @@ const LoginForm = () => {
       password: formData.password
       
     });
-
     if (data) {
       toast.success("Login Successfull", {
         style: {
@@ -75,16 +77,22 @@ const LoginForm = () => {
             />
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium">Password</label>
-
-            <input
-              name="password"
-              type="password"
-              placeholder="********"
-              className="input input-bordered w-full"
-            />
-          </div>
+         <div className="relative">
+                    <label className="mb-2 block text-sm font-medium">Password</label>
+        
+                    <input
+                      name="password"
+                      type={visible ? "text" : "password"}
+                      placeholder="********"
+                      className="input input-bordered w-full"
+                    />
+                    <button
+                      className='absolute right-3 top-2/3 -translate-y-1/2 text-gray-500 transition-colors hover:text-blue-600" '
+                      onClick={() => setVisible(!visible)}
+                    >
+                      {visible ? <FaEye size="16" /> : <FaEyeSlash size="16" />}
+                    </button>
+                  </div>
 
           <div className="flex items-center justify-between text-sm">
             <label className="flex items-center gap-2">
