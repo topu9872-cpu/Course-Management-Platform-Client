@@ -117,7 +117,7 @@ const NavBar = () => {
                   </h1>
                   <div className="dropdown dropdown-end">
                     <div tabIndex={0} className=" cursor-pointer avatar">
-                      <div className="w-10  rounded-full">
+                      <div className="w-18 border-2  border-accent-soft-foreground rounded-full">
                         <Image
                           src={user?.image ?? ""}
                           alt="Profile"
