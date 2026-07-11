@@ -7,6 +7,7 @@ import {
   ChevronDown, BookOpen, Award, Radio, Smartphone,
   Download, MessageSquare, Code, ArrowRight, ShieldCheck, ImageIcon
 } from "lucide-react";
+import EnrollButton from "@/Components/Courses/EnrollModal";
 
 // --- Cleaned & Structured Data ---
 const modulesData = [
@@ -195,10 +196,8 @@ export default function CourseDetailsPage() {
             </div>
 
             <div className="p-8 space-y-6">
-              <button className="w-full bg-neutral-900 text-white font-bold text-sm tracking-wide py-4 rounded-xl hover:bg-neutral-800 transition-all flex items-center justify-center gap-2 group shadow-md active:scale-[0.99]">
-                Enroll In Program Now 
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform stroke-[2.5]" />
-              </button>
+              {/* enrolled comfirmation modal */}
+              <EnrollButton/>
               
               <div className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-400">
                 <ShieldCheck className="w-4 h-4 text-emerald-500 stroke-[2.5]" /> <span>30-Day Money-Back Guarantee</span>

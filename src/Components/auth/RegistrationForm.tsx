@@ -1,26 +1,68 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast } from "sonner";
+import ImageBB from "../UI/ImageBB";
 
 const RegisterPage = () => {
-const [role, setRole] = useState('student');
-   const [visible, setVisible] = useState(false);
+  const [userRole, setRole] = useState("student");
+  const [visible, setVisible] = useState(false);
+  const [image, setImage] = useState<File | null>(null);
+  const route = useRouter();
 
-    const handleSubmit=(e:React.FormEvent<HTMLFormElement>)=>{
-        e.preventDefault()
-        const formData=Object.fromEntries(new FormData(e.currentTarget))
-        
+  interface formInfo {
+    email: string;
+    password: string;
+    name: string;
+    role: string;
+    image: any;
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = Object.fromEntries(
+      new FormData(e.currentTarget),
+    ) as Record<keyof formInfo, string>;
+    const imageUrl = await ImageBB(image!);
+    const { data, error } = await authClient.signUp.email({
+      email: formData.email,
+      password: formData.password,
+      name: formData.name,
+      image: imageUrl,
+      role: userRole,
+    });
+
+    if (data) {
+      toast.success("Account Created", {
+        style: {
+          background: "#ffffff",
+          color: "#2563eb",
+          border: "1px solid #bfdbfe",
+        },
+      });
+      route.push("/");
     }
+    if (error) {
+      toast.error("Failed to create account", {
+        style: {
+          background: "#ffffff",
+          color: "#2563eb",
+          border: "1px solid #bfdbfe",
+        },
+      });
+     
+    }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8">
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-lg">
         {/* Logo */}
         <div className="mb-6 text-center">
-         
-
           <h1 className="mt-3 text-2xl font-bold text-gray-800">
             Create Account
           </h1>
@@ -34,12 +76,10 @@ const [role, setRole] = useState('student');
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name */}
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Full Name
-            </label>
+            <label className="mb-2 block text-sm font-medium">Full Name</label>
 
             <input
-            name="name"
+              name="name"
               type="text"
               placeholder="Full Name"
               className="input input-bordered w-full"
@@ -53,7 +93,7 @@ const [role, setRole] = useState('student');
             </label>
 
             <input
-            name="Email"
+              name="email"
               type="email"
               placeholder="Email"
               className="input input-bordered w-full"
@@ -61,20 +101,21 @@ const [role, setRole] = useState('student');
           </div>
 
           {/* Password */}
-          <div className='relative'>
-            <label className="mb-2 block text-sm font-medium">
-              Password
-            </label>
+          <div className="relative">
+            <label className="mb-2 block text-sm font-medium">Password</label>
 
             <input
-            name='password'
-              type={visible ? 'text' : 'password'}
+              name="password"
+              type={visible ? "text" : "password"}
               placeholder="********"
               className="input input-bordered w-full"
             />
-           <button className='absolute right-3 top-2/3 -translate-y-1/2 text-gray-500 transition-colors hover:text-blue-600" ' onClick={(() => setVisible(!visible))}>
-            {visible ? <FaEye size='16'/> : <FaEyeSlash size='16'/>}
-          </button>
+            <button
+              className='absolute right-3 top-2/3 -translate-y-1/2 text-gray-500 transition-colors hover:text-blue-600" '
+              onClick={() => setVisible(!visible)}
+            >
+              {visible ? <FaEye size="16" /> : <FaEyeSlash size="16" />}
+            </button>
           </div>
 
           {/* Image */}
@@ -84,45 +125,50 @@ const [role, setRole] = useState('student');
             </label>
 
             <input
-            name="image"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                if (file) {
+                  setImage(file);
+                }
+              }}
               type="file"
               className="file-input file-input-bordered w-full"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 bg-gray-100 p-1 rounded-lg">
-              <button
-                type="button"
-                onClick={() => setRole('student')}
-                className={`py-2 text-sm font-semibold rounded-md transition-all ${
-                  role === 'student' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'
-                }`}
-              >
-                Student
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole('instructor')}
-                className={`py-2 text-sm font-semibold rounded-md transition-all ${
-                  role === 'instructor' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'
-                }`}
-              >
-                Instructor
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setRole("student")}
+              className={`py-2 text-sm font-semibold rounded-md transition-all ${
+                userRole === "student"
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              Student
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole("instructor")}
+              className={`py-2 text-sm font-semibold rounded-md transition-all ${
+                userRole === "instructor"
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              Instructor
+            </button>
+          </div>
 
           {/* Register */}
-          <button className="btn btn-primary w-full">
-            Create Account
-          </button>
+          <button className="btn btn-primary w-full">Create Account</button>
         </form>
 
         {/* Divider */}
         <div className="divider my-5">OR</div>
 
         {/* Google */}
-        <button className="btn btn-outline w-full">
-          Continue with Google
-        </button>
+        <button className="btn btn-outline w-full">Continue with Google</button>
 
         {/* Login */}
         <p className="mt-5 text-center text-sm">

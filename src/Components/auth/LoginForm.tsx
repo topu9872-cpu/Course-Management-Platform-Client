@@ -1,23 +1,56 @@
-'use client'
+"use client";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const LoginForm = () => {
+  const route = useRouter();
 
-const handleSubmit=(e:React.FormEvent<HTMLFormElement>)=>{
-e.preventDefault()
-const formData=Object.fromEntries(new FormData(e.currentTarget))
-console.log(formData)
-}
+  interface formInfo {
+    email: string;
+    password: string;
+    
+  }
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = Object.fromEntries(
+      new FormData(e.currentTarget),
+    ) as Record<keyof formInfo, string>;
+
+    const { data, error } = await authClient.signIn.email({
+      email: formData.email,
+      password: formData.password
+      
+    });
+
+    if (data) {
+      toast.success("Login Successfull", {
+        style: {
+          background: "#ffffff",
+          color: "#2563eb", 
+          border: "1px solid #bfdbfe",
+        },
+      });
+      route.push("/");
+    }
+    if (error) {
+      toast.error("Failed to Logedin", {
+        style: {
+          background: "#ffffff",
+          color: "#2563eb",
+          border: "1px solid #bfdbfe",
+        },
+      });
+    }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-lg">
         {/* Logo */}
         <div className="mb-6 text-center">
-        
-
           <h1 className="mt-3 text-2xl font-bold text-gray-800">
             Welcome Back
           </h1>
@@ -35,7 +68,7 @@ console.log(formData)
             </label>
 
             <input
-            name='email'
+              name="email"
               type="email"
               placeholder="Email"
               className="input input-bordered w-full"
@@ -43,12 +76,10 @@ console.log(formData)
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Password
-            </label>
+            <label className="mb-2 block text-sm font-medium">Password</label>
 
             <input
-            name='password'
+              name="password"
               type="password"
               placeholder="********"
               className="input input-bordered w-full"
@@ -72,16 +103,12 @@ console.log(formData)
             </Link>
           </div>
 
-          <button className="btn btn-primary w-full">
-            Login
-          </button>
+          <button className="btn btn-primary w-full">Login</button>
         </form>
 
         <div className="divider my-5">OR</div>
 
-        <button className="btn btn-outline w-full">
-          Continue with Google
-        </button>
+        <button className="btn btn-outline w-full">Continue with Google</button>
 
         <p className="mt-5 text-center text-sm text-gray-600">
           Don't have an account?{" "}

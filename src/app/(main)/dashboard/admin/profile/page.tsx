@@ -6,6 +6,7 @@ const Profile =LazyLoader(()=>import ("@/DashboardComponents/Profile/Profile"));
 const ProfilePage = () => {
   return (
     <div>
+      
         <Profile/>
     </div>
   );

@@ -1,6 +1,5 @@
-export const ImageBB = async (file: any) => {
+export const ImageBB = async (file: File) => {
   if (!file) throw new Error("image file is requred");
-
   const formData=new FormData()
   formData.append('image',file)
 
@@ -15,7 +14,8 @@ export const ImageBB = async (file: any) => {
     throw new Error("Image upload failed");
     }
  
-  return res.json();
+  const result=await res.json();
+  return result.data.display_url
 };
 
 export default ImageBB;

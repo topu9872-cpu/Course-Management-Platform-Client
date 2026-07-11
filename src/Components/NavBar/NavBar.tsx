@@ -1,36 +1,74 @@
+"use client";
 import Link from "next/link";
 import NavLink from "./NavLink";
+import Image from "next/image";
+import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 const NavBar = () => {
-  type User = {
-    name: string;
-    role: string;
-    email: string;
-  };
-  const user: User = { role: "student", name: "topu", email: "topu@example.com" };
+  const router = useRouter();
+  type User =
+    | {
+        id: string;
+        name: string;
+        email: string;
+        role?: string | null;
+        image?: string | null;
+      }
+    | undefined;
+
+  const { data: session, isPending } = authClient.useSession();
+  const user: User = session?.user;
 
   const NavData = (
     <>
       <NavLink href="/">Home</NavLink>
       <NavLink href="/courses">Courses</NavLink>
       <NavLink href="/about">About</NavLink>
+    </>
+  );
+
+  const Private = (
+    <>
       <NavLink
         href={
-          user.role === "admin"
+          user?.role === "admin"
             ? "/dashboard/admin"
-            : user.role === "instructor"
+            : user?.role === "instructor"
               ? "/dashboard/instructor"
               : "/dashboard/student"
         }
       >
         Dashboard
       </NavLink>
+      <NavLink
+        href={
+          user?.role === "admin"
+            ? "/dashboard/admin/profile"
+            : user?.role === "instructor"
+              ? "/dashboard/instructor/profile"
+              : "/dashboard/student/profile"
+        }
+      >
+        Profile
+      </NavLink>
     </>
   );
 
+  const handleLogout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login");
+        },
+      },
+    });
+  };
+
   return (
     <nav>
-      <div className="navbar right-0 left-0 fixed z-50 top-0 w-11/12 mx-auto">
+      <div className="navbar right-0 left-0  fixed z-50 top-0 w-11/12 mx-auto">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -65,23 +103,54 @@ const NavBar = () => {
           </Link>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal gap-8 border border-zinc-400 rounded-full  px-4 py-2">
+          <ul className="menu menu-horizontal bg-base-100 gap-8 border border-zinc-400 rounded-full  px-4 py-2">
             {NavData}
           </ul>
         </div>
         <div className="navbar-end">
-          {user ? (
-            <div className="flex items-center gap-7">
-              <h1 className="max-w-19 text-[15px] font-bold text-blue-500 hover:max-w-xs truncate transition-all duration-2000 ease-in-out cursor-pointer">
-                {user?.name}
-              </h1>
-
-              <button className="btn btn-primary shrink-0">Logout</button>
-            </div>
-          ) : (
+          {isPending? <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>:(
             <div>
-              <Link href="/login">Login</Link>
-              <Link href="/registration">Registration</Link>
+              {user ? (
+                <div className="flex items-center gap-7">
+                  <h1 className="max-w-19 text-[15px] font-bold text-blue-500 hover:max-w-xs truncate transition-all duration-2000 ease-in-out cursor-pointer">
+                    {user?.name}
+                  </h1>
+                  <div className="dropdown dropdown-end">
+                    <div tabIndex={0} className=" cursor-pointer avatar">
+                      <div className="w-10  rounded-full">
+                        <Image
+                          src={user?.image ?? ""}
+                          alt="Profile"
+                          width={100}
+                          height={100}
+                        />
+                      </div>
+                    </div>
+                    <ul
+                      tabIndex={1}
+                      className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                    >
+                      <li>{Private}</li>
+
+                      <button
+                        onClick={handleLogout}
+                        className="btn btn-primary shrink-0"
+                      >
+                        Logout
+                      </button>
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-x-5">
+                  <Link className="btn btn-primary" href="/login">
+                    Login
+                  </Link>
+                  <Link className="btn btn-primary" href="/registration">
+                    Registration
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </div>

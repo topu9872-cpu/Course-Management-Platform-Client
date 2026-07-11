@@ -1,23 +1,25 @@
+// auth.ts
 import { betterAuth } from "better-auth";
-import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { MongoClient } from "mongodb";
 
-const client = new MongoClient("mongodb://localhost:27017/database");
-const db = client.db('Course-Management-Platform');
+const client = new MongoClient(process.env.MONGODB_URI as string);
+const db = client.db("Course-Management-Platform");
 
 export const auth = betterAuth({
-  database: mongodbAdapter(db, {
-    client
-  }),
+  database: mongodbAdapter(db, { client }),
+  emailAndPassword: { enabled: true },
+
   user: {
     additionalFields: {
       role: {
         type: "string",
-        required: true,
-       
-        input: true,
+        required: false,
+  
+        input: true, 
       },
     },
-  
-  }
+  },
+
+  plugins: [], 
 });

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ComposedChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { toast, Toaster } from 'sonner';
 import { Search, Bell, BookOpen, Users, Star, CheckCircle, DollarSign, ArrowUpRight, Plus, Settings, GraduationCap, MessageSquare } from 'lucide-react';
+import Link from 'next/link';
 
 const stats = [
   { label: 'Courses', value: '12', icon: BookOpen },
@@ -131,8 +132,8 @@ export const InstructorDashboard: React.FC = () => {
               <p className="text-[11px] text-slate-400">Status mapping and roster tracking across active catalogs.</p>
             </div>
             <div className="flex items-center gap-1.5 self-end sm:self-auto">
-              <button onClick={() => toast.success("Opening clean blueprint builder")} className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"><Plus className="h-3 w-3" /> New</button>
-              <button onClick={() => toast.info("Syncing full portfolio context")} className="p-1.5 text-slate-400 hover:text-slate-900 bg-slate-50 border border-slate-200 rounded-lg"><Settings className="h-3.5 w-3.5" /></button>
+              <Link href={'/dashboard/instructor/create-course'} className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"><Plus className="h-3 w-3" /> New</Link>
+              <Link href={'/dashboard/instructor/profile'}  className="p-1.5 text-slate-400 hover:text-slate-900 bg-slate-50 border border-slate-200 rounded-lg"><Settings className="h-3.5 w-3.5" /></Link>
             </div>
           </div>
           <div className="overflow-x-auto">
