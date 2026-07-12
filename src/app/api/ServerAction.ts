@@ -1,4 +1,4 @@
-import { getData, postData, updateData } from "./ServerMutation";
+import { deleteData, getData, postData, updateData } from "./ServerMutation";
 
 export const getCoursesData = async (query: {
   page?: string;
@@ -45,6 +45,9 @@ export const getInstructorData = async (id:String) => {
   return getData(`/courses/instructor/${id}`);
 };
 export const updateInstructorData = async (id:String, data:any) => {
-   console.log('ssssssssssssssssssssssssssssssssss',id,data)
   return updateData(`/courses/instructor/${id}`,data);
 };
+
+export const deleteInstructorData=async(id:String)=>{
+  return deleteData(`/courses/instructor/${id}`)
+}

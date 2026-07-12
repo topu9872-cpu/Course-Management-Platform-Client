@@ -23,7 +23,7 @@ export const postData = async (path: string, data: any) => {
 
 
 export const updateData = async (path: string, data: any) => {
-  console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmm',path,data)
+ 
   const res = await fetch(`${BASE_URL}${path}`, {
     method: "PATCH",
     headers: {
@@ -34,5 +34,14 @@ export const updateData = async (path: string, data: any) => {
 
   if (!res.ok) throw new Error("Failed to fetch post data");
 
+  return res.json();
+};
+
+
+export const deleteData = async (path: string) => {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("Failed to fetch post data");
   return res.json();
 };

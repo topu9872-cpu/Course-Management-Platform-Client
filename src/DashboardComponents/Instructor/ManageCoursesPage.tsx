@@ -17,6 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { EditCourseForm } from "./EditCourseModal";
+import { deleteInstructorData } from "@/app/api/ServerAction";
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 
@@ -110,7 +111,6 @@ function DeleteModal({
     </div>
   );
 }
-
 // ─── Main Page Component ────────────────────────────────────────────────────
 
 export default function ManageCourses({
@@ -145,19 +145,24 @@ export default function ManageCourses({
     [courses, search, statusFilter],
   );
 
-  const handleDelete = async () => {
-    if (!deletingCourse) return;
-    try {
-      await onDelete?.(deletingCourse._id);
-      setCourses((prev) => prev.filter((c) => c._id !== deletingCourse._id));
-      toast.success("Course deleted successfully.");
-      router.refresh();
-    } catch {
-      toast.error("Failed to delete course.");
-    } finally {
-      setDeletingCourse(null);
-    }
-  };
+ const handleDelete = async () => {
+  if (!deletingCourse) return;
+  try {
+    // 1. Call your server action with the ID
+    await deleteInstructorData(deletingCourse._id);
+    
+    // 2. Remove the course from the local state so it vanishes from the UI
+    setCourses((prev) => prev.filter((c) => c._id !== deletingCourse._id));
+    
+    toast.success("Course deleted successfully.");
+    router.refresh();
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to delete course.");
+  } finally {
+    setDeletingCourse(null);
+  }
+};
 
   const handleUpdateSubmit = async (formData: FormData) => {
     if (!editingCourse) return;
@@ -196,13 +201,13 @@ export default function ManageCourses({
     <div className="min-h-screen bg-[#F7F7FB] text-slate-800 antialiased pb-16">
       {/* Global Modals Context */}
       <AnimatePresence>
-        {deletingCourse && (
-          <DeleteModal
-            course={deletingCourse}
-            onClose={() => setDeletingCourse(null)}
-            onConfirm={handleDelete}
-          />
-        )}
+      {deletingCourse && (
+  <DeleteModal
+    course={deletingCourse}
+    onClose={() => setDeletingCourse(null)}
+    onConfirm={handleDelete} 
+  />
+)}
 
         {editingCourse && (
           <EditCourseForm
