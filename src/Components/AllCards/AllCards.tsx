@@ -8,6 +8,7 @@ interface Course {
   _id: number;
 
   thumbnail: string;
+  url: string;
   title: string;
   description: string;
   price: string;
@@ -25,7 +26,13 @@ const AllCards = ({ course }: { course: Course }) => {
         animate={{ opacity: 1, scale: 1 }}
         className="group flex flex-col h-80 bg-white rounded-2xl border border-gray-200 p-3 transition-all hover:border-blue-300 hover:shadow-md"
       >
-        <Image src={course.thumbnail} width={200} height={200} alt={course.title} className={'h-32 w-full rounded-xl mb-3'} />
+        <Image
+          src={course.thumbnail || course?.url}
+          width={200}
+          height={200}
+          alt={course.title}
+          className={"h-32 w-full rounded-xl mb-3"}
+        />
 
         <div className="px-1 flex flex-col grow">
           <h3 className="font-bold text-gray-900 text-sm mb-1">
@@ -49,7 +56,7 @@ const AllCards = ({ course }: { course: Course }) => {
             </span>
             <span className="flex items-center gap-1 justify-end font-bold text-gray-800">
               <Star size={10} className="fill-yellow-400 text-yellow-400" />
-              {course.rating}
+              {course.rating || "4.5"}
             </span>
           </div>
 

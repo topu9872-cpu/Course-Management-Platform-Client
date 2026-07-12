@@ -119,7 +119,7 @@ export default function SimpleSearchFilterBar() {
             />
           </div>
 
-          {/* Difficulty Filter */}
+        
 
           {/* Price Filter */}
           <div className="relative flex-1 sm:flex-initial">

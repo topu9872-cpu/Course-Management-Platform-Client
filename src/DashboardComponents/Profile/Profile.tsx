@@ -30,7 +30,6 @@ const Profile = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user as any;
-  console.log(user);
   useEffect(() => {
     if (user?.bath) {
       setDate(new Date(user.bath));

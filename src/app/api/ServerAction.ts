@@ -36,3 +36,7 @@ export const emailPost = async (data: EmailInfo) => {
 export const Subcribeing = async (data: EmailInfo) => {
   return postData("/subcribe", data);
 };
+
+export const CoursesPost = async (data:any) => {
+  return postData("/courses", data);
+};

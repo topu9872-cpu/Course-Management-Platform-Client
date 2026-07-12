@@ -7,8 +7,7 @@ export default function EnrollButton({detailsData}:any) {
   const [open, setOpen] = useState(false);
 
   const handleEnroll = () => {
-    // TODO: Stripe Checkout / API call
-    console.log("Enrolled");
+   console.log(detailsData)
 
     setOpen(false);
   };

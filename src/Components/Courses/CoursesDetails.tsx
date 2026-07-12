@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Star,
@@ -69,7 +69,7 @@ export default function CourseDetails({ detailsData }: any) {
             <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-neutral-600 font-medium pt-6 border-t border-neutral-200/60">
               <span className="flex items-center gap-2">
                 <Star className="w-4 h-4 fill-amber-500 text-amber-500" />{" "}
-                <b className="text-neutral-900">{detailsData.rating}</b>
+                <b className="text-neutral-900">{detailsData.rating|| '4.5'}</b>
               </span>
               <span className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-neutral-400" />{" "}
@@ -94,7 +94,8 @@ export default function CourseDetails({ detailsData }: any) {
                   key={activeImageIdx}
                   src={
                     detailsData.gallery[activeImageIdx]?.url ||
-                    detailsData.gallery.url
+                    detailsData.url ||
+                    detailsData.gallery.thumbnail
                   }
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -104,13 +105,13 @@ export default function CourseDetails({ detailsData }: any) {
               </AnimatePresence>
               <div className="absolute bottom-4 left-4 bg-neutral-950/80 backdrop-blur-md text-white px-3 py-1.5 rounded-lg text-xs font-mono tracking-wider flex items-center gap-2 border border-white/10">
                 <ImageIcon className="w-3.5 h-3.5 text-blue-400" />{" "}
-                {detailsData.gallery[activeImageIdx]?.title.toUpperCase() ||
+                {detailsData.gallery[activeImageIdx]?.title ||
                   "COURSE THUMBNAIL"}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              {detailsData.gallery.map((img: any, idx: number) => (
+              {detailsData?.gallery?.map((img: any, idx: number) => (
                 <button
                   key={idx}
                   onClick={() => setActiveImageIdx(idx)}
@@ -120,7 +121,7 @@ export default function CourseDetails({ detailsData }: any) {
                     Preview 0{idx + 1}
                   </span>
                   <span className="text-sm font-bold block text-neutral-800">
-                    {img.title}
+                    {img.title || img.alt}
                   </span>
                 </button>
               ))}
@@ -133,7 +134,7 @@ export default function CourseDetails({ detailsData }: any) {
               Learning Outcomes
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {detailsData.learningOutcomes.map((item: string, idx: number) => (
+              {detailsData?.learningOutcomes?.map((item: string, idx: number) => (
                 <div
                   key={idx}
                   className="flex items-start gap-3.5 p-4 rounded-xl border border-neutral-200/60 bg-white shadow-sm"
@@ -148,61 +149,78 @@ export default function CourseDetails({ detailsData }: any) {
           </div>
 
           {/* Syllabus */}
-         <div className="space-y-6 border-t border-neutral-200/80 pt-10">
-  <div className="flex items-center justify-between">
-    <h3 className="text-2xl font-extrabold text-neutral-900">Program Syllabus</h3>
-    <span className="text-sm font-medium text-neutral-500">{detailsData.modules.length} Modules</span>
-  </div>
-  
-  <div className="space-y-3">
-    {detailsData.modules.map((module: any, idx: number) => {
-      const id = `m${idx}`;
-      const isOpen = !!expandedModules[id];
-      
-      return (
-        <div 
-          key={idx} 
-          className={`border rounded-2xl transition-all duration-300 ease-in-out ${isOpen ? "border-blue-200 bg-blue-50/30" : "border-neutral-200 bg-white hover:border-neutral-300"}`}
-        >
-          <button
-            onClick={() => toggleModule(id)}
-            className="w-full flex items-center justify-between p-5 text-left"
-          >
-            <div className="flex items-center gap-4">
-              <span className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${isOpen ? "bg-blue-600 text-white" : "bg-neutral-100 text-neutral-600"}`}>
-                {idx + 1}
+          <div className="space-y-6 border-t border-neutral-200/80 pt-10">
+            <div className="flex items-center justify-between">
+              <h3 className="text-2xl font-extrabold text-neutral-900">
+                Program Syllabus
+              </h3>
+              <span className="text-sm font-medium text-neutral-500">
+                {detailsData.modules.length} Modules
               </span>
-              <h4 className="font-bold text-neutral-900">{module.title}</h4>
             </div>
-            <ChevronDown className={`w-5 h-5 text-neutral-400 transition-transform duration-300 ${isOpen ? "rotate-180 text-blue-600" : ""}`} />
-          </button>
-          
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div 
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="px-5 pb-5 pt-0 pl-17"> {/* Padding aligned with text */}
-                  <ul className="space-y-3 border-l-2 border-neutral-200 pl-6">
-                    {module.lessons.map((lesson: string, i: number) => (
-                      <li key={i} className="text-sm font-medium text-neutral-600 flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                        {lesson}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      );
-    })}
-  </div>
-</div>
+
+            <div className="space-y-3">
+              {detailsData?.modules?.map((module: any, idx: number) => {
+                const id = `m${idx}`;
+                const isOpen = !!expandedModules[id];
+
+                return (
+                  <div
+                    key={idx}
+                    className={`border rounded-2xl transition-all duration-300 ease-in-out ${isOpen ? "border-blue-200 bg-blue-50/30" : "border-neutral-200 bg-white hover:border-neutral-300"}`}
+                  >
+                    <button
+                      onClick={() => toggleModule(id)}
+                      className="w-full flex items-center justify-between p-5 text-left"
+                    >
+                      <div className="flex items-center gap-4">
+                        <span
+                          className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${isOpen ? "bg-blue-600 text-white" : "bg-neutral-100 text-neutral-600"}`}
+                        >
+                          {idx + 1}
+                        </span>
+                        <h4 className="font-bold text-neutral-900">
+                          {detailsData?.modules.join(',')}
+                        </h4>
+                      </div>
+                      <ChevronDown
+                        className={`w-5 h-5 text-neutral-400 transition-transform duration-300 ${isOpen ? "rotate-180 text-blue-600" : ""}`}
+                      />
+                    </button>
+
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-5 pb-5 pt-0 pl-17">
+                            {" "}
+                            {/* Padding aligned with text */}
+                            <ul className="space-y-3 border-l-2 border-neutral-200 pl-6">
+                              {module?.lessons?.map(
+                                (lesson: string, i: number) => (
+                                  <li
+                                    key={i}
+                                    className="text-sm font-medium text-neutral-600 flex items-center gap-3"
+                                  >
+                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                                    {lesson}
+                                  </li>
+                                ),
+                              )}
+                            </ul>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         {/* RIGHT COLUMN: Pricing */}
