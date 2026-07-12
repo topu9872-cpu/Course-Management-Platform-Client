@@ -17,10 +17,12 @@ import {
   List,
 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
-const CreateCoursePage = ({userId}:{userId:Number}) => {
+const CreateCoursePage = ({ userId }: { userId: String }) => {
+  const router = useRouter();
   const [status, setStatus] = useState("Draft");
   const [visibility, setVisibility] = useState("Public");
   const [featured, setFeatured] = useState(true);
@@ -31,6 +33,10 @@ const CreateCoursePage = ({userId}:{userId:Number}) => {
   const [outcomes, setOutcomes] = useState<string[]>([""]);
   const [modules, setModules] = useState<string[]>([""]);
   const [requirements, setRequirements] = useState<string[]>([""]);
+  const date = new Date();
+
+  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
   const [gallery, setGallery] = useState<{ alt: string; url: string }[]>([
     {
       alt: "Architecture Diagram",
@@ -55,11 +61,13 @@ const CreateCoursePage = ({userId}:{userId:Number}) => {
       requirements: requirements.filter((r) => r.trim() !== ""),
       gallery: gallery.filter((g) => g.url.trim() !== ""),
       rating: Number((Math.random() * 4 + 1).toFixed(1)),
-      userId:userId
+      userId: userId,
+      lastUpdated: formattedDate,
     };
     const postData = await CoursesPost(payload);
-    if (postData.acknowledged=== true) {
+    if (postData.acknowledged === true) {
       toast.success("course created successfully");
+      router.refresh();
     } else {
       toast.error("faild to post courses");
     }

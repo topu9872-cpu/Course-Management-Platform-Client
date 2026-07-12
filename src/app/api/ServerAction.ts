@@ -1,4 +1,4 @@
-import { getData, postData } from "./ServerMutation";
+import { getData, postData, updateData } from "./ServerMutation";
 
 export const getCoursesData = async (query: {
   page?: string;
@@ -39,4 +39,12 @@ export const Subcribeing = async (data: EmailInfo) => {
 
 export const CoursesPost = async (data:any) => {
   return postData("/courses", data);
+};
+
+export const getInstructorData = async (id:String) => {
+  return getData(`/courses/instructor/${id}`);
+};
+export const updateInstructorData = async (id:String, data:any) => {
+   console.log('ssssssssssssssssssssssssssssssssss',id,data)
+  return updateData(`/courses/instructor/${id}`,data);
 };

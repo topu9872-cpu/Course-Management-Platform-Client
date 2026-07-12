@@ -6,9 +6,10 @@ const CreateCourse =LazyLoader(()=>import("@/DashboardComponents/Instructor/Crea
 
 const CreateCoursePage = async() => {
 const user=await userDet()
+console.log(user)
   return (
     <div>
-    <CreateCourse userId={Number(user?.id)}/>
+    <CreateCourse userId={String(user?.id)}/>
     </div>
   );
 };

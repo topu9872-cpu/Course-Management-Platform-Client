@@ -20,3 +20,19 @@ export const postData = async (path: string, data: any) => {
 
   return res.json();
 };
+
+
+export const updateData = async (path: string, data: any) => {
+  console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmm',path,data)
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch post data");
+
+  return res.json();
+};
