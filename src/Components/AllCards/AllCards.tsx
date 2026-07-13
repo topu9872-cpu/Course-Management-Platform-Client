@@ -11,7 +11,8 @@ interface Course {
   url: string;
   title: string;
   description: string;
-  price: string;
+  
+discountPrice: string;
 
   startDate: string;
   rating: number;
@@ -48,7 +49,7 @@ const AllCards = ({ course }: { course: Course }) => {
               {course.startDate}
             </span>
             <span className="flex items-center gap-1 justify-end font-bold text-blue-600">
-              {course.price}
+              {course.discountPrice}
             </span>
             <span className="flex items-center gap-1">
               <MapPin size={10} />

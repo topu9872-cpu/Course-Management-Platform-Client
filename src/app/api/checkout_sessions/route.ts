@@ -14,6 +14,8 @@ type EnrollDetails = {
   title: string;
   paymentStatus: string;
   enrollDate: string;
+  instructorId: string;
+  students: string;
 };
 
 export async function POST(req: NextRequest) {
@@ -31,6 +33,8 @@ export async function POST(req: NextRequest) {
       paymentStatus,
       enrollDate,
       studentName,
+      students,
+      instructorId,
     } = body;
 
     let lineItem: Stripe.Checkout.SessionCreateParams.LineItem;
@@ -58,6 +62,8 @@ export async function POST(req: NextRequest) {
       line_items: [lineItem],
       mode: mode,
       metadata: {
+        instructorId,
+        students,
         studentId,
         studentEmail,
         type,

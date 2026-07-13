@@ -9,8 +9,7 @@ export default async function PaymentSuccessPage({ searchParams }: { searchParam
 
   // 1. Validate session_id exists
   if (!session_id) {
-    return
-    // redirect("/");
+    redirect("/");
   }
 
   // 2. Fetch the session from Stripe
@@ -36,7 +35,8 @@ if(session_id){
 await updateEnrollmentPost(
   session.metadata.courseId,
   session.metadata
-);}
+);
+}
  
 
   return (

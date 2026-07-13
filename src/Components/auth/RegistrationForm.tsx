@@ -39,7 +39,7 @@ const RegisterPage = () => {
       role: Role,
       subscription: userSub,
     });
-console.log(data)
+
     if (data) {
       route.push("/");
       toast.success("Account Created", {

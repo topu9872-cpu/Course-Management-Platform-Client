@@ -3,16 +3,30 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
-import { getEnrollmentPrice } from "@/app/api/ServerAction";
+import { getEnrollmentData, getEnrollmentPrice } from "@/app/api/ServerAction";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function EnrollButton({ detailsData }: any) {
   const [open, setOpen] = useState(false);
-
+  const router = useRouter();
   const { data: session } = authClient.useSession();
   const user = session?.user;
   const handleEnroll = async () => {
+    if (user?.role !== "student") {
+      router.push("/courses");
+      toast.error("This course is already available to students.");
+    }
+    if (!user?.id) {
+      return;
+    }
+
     const price = await getEnrollmentPrice(detailsData._id);
+    const getEnrolled = await getEnrollmentData(user?.id, detailsData._id);
+    if (getEnrolled.enrolled) {
+      toast.error(`${getEnrolled.message} in ${price.title}`);
+      return;
+    }
     setOpen(false);
     const res = await fetch("/api/checkout_sessions", {
       method: "POST",
@@ -21,12 +35,13 @@ export default function EnrollButton({ detailsData }: any) {
         studentName: user?.name,
         studentId: user?.id,
         studentEmail: user?.email,
-     
+        students: price.students,
         price: price.discountPrice,
         courseId: price._id,
         title: price.title,
         paymentStatus: "paid",
         enrollDate: new Date().toISOString().split("T")[0],
+        instructorId: price.userId,
       }),
     });
 
