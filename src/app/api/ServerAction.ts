@@ -51,3 +51,13 @@ export const updateInstructorData = async (id:String, data:any) => {
 export const deleteInstructorData=async(id:String)=>{
   return deleteData(`/courses/instructor/${id}`)
 }
+
+
+export const getEnrollmentPrice=async(id:String)=>{
+  return getData(`/student-enroll/${id}`)
+}
+
+
+export const updateEnrollmentPost = async (id:String, data:any) => {
+  return postData(`/student-enroll/${id}`,data);
+};

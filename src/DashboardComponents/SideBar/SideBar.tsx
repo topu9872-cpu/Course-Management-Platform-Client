@@ -18,19 +18,23 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
-const user = { role: "instructor", name: "topu", email: "topu@example.com" };
+
+
+export const CourseHubSidebar = () => {
+  const [activeItem, setActiveItem] = useState("dashboard");
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+const { data: session, isPending } = authClient.useSession();
+const user=session?.user
 const navigation =
   user?.role === "admin"
     ? adminNavigation
     : user?.role === "instructor"
       ? instructorNavigation
       : studentNavigation;
-
-export const CourseHubSidebar = () => {
-  const [activeItem, setActiveItem] = useState("dashboard");
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   // Auto-collapse mobile panels when viewport sizes scale past desktop breakpoints
   useEffect(() => {

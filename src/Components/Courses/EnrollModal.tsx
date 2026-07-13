@@ -2,14 +2,41 @@
 
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { toast } from "sonner";
+import { getEnrollmentPrice } from "@/app/api/ServerAction";
+import { authClient } from "@/lib/auth-client";
 
-export default function EnrollButton({detailsData}:any) {
+export default function EnrollButton({ detailsData }: any) {
   const [open, setOpen] = useState(false);
 
-  const handleEnroll = () => {
-   console.log(detailsData)
-
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+  const handleEnroll = async () => {
+    const price = await getEnrollmentPrice(detailsData._id);
     setOpen(false);
+    const res = await fetch("/api/checkout_sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        studentName: user?.name,
+        studentId: user?.id,
+        studentEmail: user?.email,
+     
+        price: price.discountPrice,
+        courseId: price._id,
+        title: price.title,
+        paymentStatus: "paid",
+        enrollDate: new Date().toISOString().split("T")[0],
+      }),
+    });
+
+    const { url, error } = await res.json();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+    if (url) window.location.assign(url); // redirect to Stripe Checkout
   };
 
   return (
@@ -30,8 +57,8 @@ export default function EnrollButton({detailsData}:any) {
             </h2>
 
             <p className="mt-3 text-neutral-600">
-              You're about to enroll in this program. After continuing,
-              you'll be redirected to the secure payment page.
+              You're about to enroll in this program. After continuing, you'll
+              be redirected to the secure payment page.
             </p>
 
             <div className="mt-8 flex justify-end gap-3">

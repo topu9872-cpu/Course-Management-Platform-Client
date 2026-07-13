@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
-import ImageBB from "../UI/ImageBB";
+
 import { emailPost } from "@/app/api/ServerAction";
+import { ImageBB } from "../UI/ImageBB";
 
 const RegisterPage = () => {
   const [Role, setRole] = useState("student");
@@ -38,7 +39,7 @@ const RegisterPage = () => {
       role: Role,
       subscription: userSub,
     });
-
+console.log(data)
     if (data) {
       route.push("/");
       toast.success("Account Created", {
