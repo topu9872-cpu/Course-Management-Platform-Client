@@ -5,14 +5,23 @@ import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { getEnrollmentData, getEnrollmentPrice } from "@/app/api/ServerAction";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function EnrollButton({ detailsData }: any) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const pathName=usePathname()
   const { data: session } = authClient.useSession();
   const user = session?.user;
+
+
   const handleEnroll = async () => {
+
+    if(!user){
+      router.push(`/login?redirect=${encodeURIComponent(pathName)}`)
+      toast.error('please login')
+      return
+    }
     if (user?.role !== "student") {
       router.push("/courses");
       toast.error("This course is already available to students.");
@@ -42,6 +51,10 @@ export default function EnrollButton({ detailsData }: any) {
         paymentStatus: "paid",
         enrollDate: new Date().toISOString().split("T")[0],
         instructorId: price.userId,
+        instructor: price.instructor,
+        category: price.category,
+        rating: price.rating,
+        duration: price.duration,
       }),
     });
 

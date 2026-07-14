@@ -4,7 +4,6 @@ export const getData = async (path: string, query: string = "") => {
   const url = `${BASE_URL}${path}${query ? `?${query}` : ""}`;
 
   const res = await fetch(url);
-
   if (!res.ok) {
     const error = await res.text();
     console.log("Error:", error);

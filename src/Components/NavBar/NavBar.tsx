@@ -2,14 +2,16 @@
 import Link from "next/link";
 import NavLink from "./NavLink";
 import Image from "next/image";
-import { auth } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const NavBar = () => {
   const router = useRouter();
+         const [mounted, setMounted] = useState(false);
+
   type User =
-    | {
+    {
         id: string;
         name: string;
         email: string;
@@ -66,6 +68,18 @@ const NavBar = () => {
     });
   };
 
+   useEffect(() => {
+
+    setMounted(true);
+
+  }, []);
+
+ 
+ if (!mounted) {
+    return null; // অথবা Skeleton
+  }
+
+
   return (
     <nav>
       <div className="navbar right-0 left-0  fixed z-50 top-0 w-11/12 mx-auto">
@@ -108,7 +122,7 @@ const NavBar = () => {
           </ul>
         </div>
         <div className="navbar-end">
-          {isPending? <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>:(
+          {isPending? <div className="h-10 w-10 rounded-full bg-gray-20 animate-pulse" />:(
             <div>
               {user ? (
                 <div className="flex items-center gap-7">

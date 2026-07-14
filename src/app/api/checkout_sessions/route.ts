@@ -16,6 +16,10 @@ type EnrollDetails = {
   enrollDate: string;
   instructorId: string;
   students: string;
+  instructor: string;
+  category: string;
+  rating: string;
+  duration: string;
 };
 
 export async function POST(req: NextRequest) {
@@ -35,6 +39,10 @@ export async function POST(req: NextRequest) {
       studentName,
       students,
       instructorId,
+      instructor,
+      category,
+      rating,
+      duration,
     } = body;
 
     let lineItem: Stripe.Checkout.SessionCreateParams.LineItem;
@@ -73,6 +81,10 @@ export async function POST(req: NextRequest) {
         paymentStatus,
         enrollDate,
         studentName,
+        instructor,
+        category,
+        rating,
+        duration,
       },
       // Pass the session ID to your success page
       success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,

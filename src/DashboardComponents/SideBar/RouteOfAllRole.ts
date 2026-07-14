@@ -36,12 +36,12 @@ export const studentNavigation: NavigationItem[] = [
     path: "/dashboard/student/my-courses",
   },
   
-  {
-    id: "assignments",
-    label: "Assignments",
-    icon: FileText,
-    path: "/dashboard/student/assignments",
-  },
+  // {
+  //   id: "assignments",
+  //   label: "Assignments",
+  //   icon: FileText,
+  //   path: "/dashboard/student/assignments",
+  // },
   {
     id: "certificates",
     label: "Certificates",

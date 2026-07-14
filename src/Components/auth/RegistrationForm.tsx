@@ -2,7 +2,7 @@
 
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
@@ -11,6 +11,7 @@ import { emailPost } from "@/app/api/ServerAction";
 import { ImageBB } from "../UI/ImageBB";
 
 const RegisterPage = () => {
+  const params=useSearchParams()
   const [Role, setRole] = useState("student");
   const [visible, setVisible] = useState(false);
   const [image, setImage] = useState<File | null>(null);
@@ -24,7 +25,9 @@ const RegisterPage = () => {
     image: any;
     subscription: string;
   }
-
+console.log(params.toString());
+console.log(params.get("redirect"));
+const redirectTo=params.get('redirect')|| '/'
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = Object.fromEntries(
@@ -41,7 +44,7 @@ const RegisterPage = () => {
     });
 
     if (data) {
-      route.push("/");
+      route.push(redirectTo);
       toast.success("Account Created", {
         style: {
           background: "#ffffff",
@@ -170,18 +173,11 @@ const RegisterPage = () => {
           {/* Register */}
           <button className="btn btn-primary w-full">Create Account</button>
         </form>
-
-        {/* Divider */}
-        <div className="divider my-5">OR</div>
-
-        {/* Google */}
-        <button className="btn btn-outline w-full">Continue with Google</button>
-
         {/* Login */}
         <p className="mt-5 text-center text-sm">
           Already have an account?{" "}
           <Link
-            href="/login"
+            href={`/login?redirect=${redirectTo}`}
             className="font-semibold text-blue-600 hover:underline"
           >
             Login

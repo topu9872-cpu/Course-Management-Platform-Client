@@ -1,13 +1,14 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { toast } from "sonner";
 
 const LoginForm = () => {
   const route = useRouter();
+  const params=useSearchParams()
   const [visible, setVisible] = useState(false);
 
   interface formInfo {
@@ -15,7 +16,9 @@ const LoginForm = () => {
     password: string;
     
   }
-
+  console.log(params.toString());
+console.log(params.get("redirect"));
+const redirectTo=params.get('redirect') || '/'
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = Object.fromEntries(
@@ -35,7 +38,7 @@ const LoginForm = () => {
           border: "1px solid #bfdbfe",
         },
       });
-      route.push("/");
+      route.push(redirectTo);
     }
     if (error) {
       toast.error("Failed to Logedin", {
@@ -113,15 +116,10 @@ const LoginForm = () => {
 
           <button className="btn btn-primary w-full">Login</button>
         </form>
-
-        <div className="divider my-5">OR</div>
-
-        <button className="btn btn-outline w-full">Continue with Google</button>
-
         <p className="mt-5 text-center text-sm text-gray-600">
           Don't have an account?{" "}
           <Link
-            href="/registration"
+            href={`/registration?redirect=${redirectTo}`}
             className="font-semibold text-blue-600 hover:underline"
           >
             Register

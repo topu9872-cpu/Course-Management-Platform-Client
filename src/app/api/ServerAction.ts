@@ -81,3 +81,8 @@ export const getInstructorsStudents = async (
     `search=${encodeURIComponent(search)}`,
   );
 };
+
+
+export const getStudentsCourses=async(id:string)=>{
+  return getData(`/student-courses/${id}`)
+}
