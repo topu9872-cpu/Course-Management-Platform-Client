@@ -17,12 +17,10 @@ import {
   List,
 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 const CreateCoursePage = ({ userId }: { userId: String }) => {
-  const router = useRouter();
   const [status, setStatus] = useState("Draft");
   const [visibility, setVisibility] = useState("Public");
   const [featured, setFeatured] = useState(true);
@@ -67,7 +65,7 @@ const CreateCoursePage = ({ userId }: { userId: String }) => {
     const postData = await CoursesPost(payload);
     if (postData.acknowledged === true) {
       toast.success("course created successfully");
-      router.refresh();
+      window.location.reload()
     } else {
       toast.error("faild to post courses");
     }

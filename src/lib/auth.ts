@@ -53,6 +53,11 @@ export const auth = betterAuth({
         required: false,
         input: true,
       },
+      isBlock: {
+        type:'boolean',
+        required: false,
+        input: true,
+      },
     },
   },
   plugins: [],

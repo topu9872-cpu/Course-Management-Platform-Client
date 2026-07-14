@@ -22,9 +22,8 @@ const RegisterPage = () => {
     name: string;
     role: string;
     image: any;
+    isBlock:boolean
   }
-console.log(params.toString());
-console.log(params.get("redirect"));
 const redirectTo=params.get('redirect')|| '/'
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,6 +37,7 @@ const redirectTo=params.get('redirect')|| '/'
       name: formData.name,
       image: imageUrl,
       role: Role,
+      isBlock:false
     });
 
     if (data) {

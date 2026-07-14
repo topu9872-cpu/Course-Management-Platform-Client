@@ -28,6 +28,7 @@ export const postData = async (path: string, data: any) => {
 };
 
 export const updateData = async (path: string, data: any) => {
+console.log(path, data)
   const res = await fetch(`${BASE_URL}${path}`, {
     method: "PATCH",
     headers: {

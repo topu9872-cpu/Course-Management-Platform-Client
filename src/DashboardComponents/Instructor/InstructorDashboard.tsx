@@ -45,8 +45,12 @@ export const InstructorDashboard = ({
   const total = data
     .reduce((sum, price) => sum + Number(price.price), 0)
     .toFixed(2);
-  const ratings = data.map((item) => Number(item.rating) / 5);
-  const stats = [
+const averageRating =data.length ?
+  data.reduce((sum, item) => sum + Number(item.rating), 0) / data.length : 0.0;
+
+const ratings = averageRating.toFixed(1); 
+console.log(data)
+ const stats = [
     { label: "Courses", value: coursesData.length || 0, icon: BookOpen },
     { label: "Students", value: data.length || 0, icon: Users },
     { label: "Rating", value: ratings, icon: Star },

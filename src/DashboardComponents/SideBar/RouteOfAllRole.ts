@@ -111,23 +111,12 @@ export const adminNavigation: NavigationItem[] = [
     icon: GraduationCap,
     path: "/courses",
   },
-  {
-    id: "categories",
-    label: "Categories",
-    icon: FolderOpen,
-    path: "/dashboard/admin/categories",
-  },
+ 
   {
     id: "enrollments",
     label: "Enrollments",
     icon: CreditCard,
     path: "/dashboard/admin/enrollments",
-  },
-  {
-    id: "reviews",
-    label: "Reviews",
-    icon: Star,
-    path: "/dashboard/admin/reviews",
   },
   {
     id: "profile",

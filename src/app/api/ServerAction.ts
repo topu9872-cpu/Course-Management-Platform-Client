@@ -86,3 +86,14 @@ export const getInstructorsStudents = async (
 export const getStudentsCourses=async(id:string)=>{
   return getData(`/student-courses/${id}`)
 }
+
+export const getAllUsers=async()=>{
+  return getData('/users')
+}
+
+export const getUserBlock=async(id:string,isBlock:boolean)=>{
+  return updateData(`/users/${id}`,{isBlock})
+}
+export const deleteUser=async(id:string)=>{
+  return deleteData(`/users/${id}`)
+}
