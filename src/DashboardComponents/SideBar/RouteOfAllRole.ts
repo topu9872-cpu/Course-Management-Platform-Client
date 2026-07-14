@@ -14,6 +14,7 @@ import {
   User,
   Settings,
 } from "lucide-react";
+import { BiMoney } from "react-icons/bi";
 
 interface NavigationItem {
   id: string;
@@ -44,9 +45,9 @@ export const studentNavigation: NavigationItem[] = [
   // },
   {
     id: "certificates",
-    label: "Certificates",
-    icon: Award,
-    path: "/dashboard/student/certificates",
+    label: "Purchase History",
+    icon: BiMoney,
+    path: "/dashboard/student/purchase-story",
   },
   {
     id: "profile",

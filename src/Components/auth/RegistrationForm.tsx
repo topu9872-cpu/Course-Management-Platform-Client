@@ -16,14 +16,12 @@ const RegisterPage = () => {
   const [visible, setVisible] = useState(false);
   const [image, setImage] = useState<File | null>(null);
   const route = useRouter();
-  const userSub = Role === "student" ? "student_free" : null;
   interface formInfo {
     email: string;
     password: string;
     name: string;
     role: string;
     image: any;
-    subscription: string;
   }
 console.log(params.toString());
 console.log(params.get("redirect"));
@@ -40,7 +38,6 @@ const redirectTo=params.get('redirect')|| '/'
       name: formData.name,
       image: imageUrl,
       role: Role,
-      subscription: userSub,
     });
 
     if (data) {
