@@ -97,3 +97,10 @@ export const getUserBlock=async(id:string,isBlock:boolean)=>{
 export const deleteUser=async(id:string)=>{
   return deleteData(`/users/${id}`)
 }
+export const getAllEnrollment=async()=>{
+  return getData('/all-users')
+}
+
+export const deleteEnrollmentAdmin=async(id:string)=>{
+  return deleteData(`/all-users/${id}`)
+}

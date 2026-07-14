@@ -1,12 +1,13 @@
+import { getAllEnrollment } from "@/app/api/ServerAction";
 import { LazyLoader } from "@/Components/UI/LazyLoder";
 
 const EnrollmentsManagement =LazyLoader(()=>import ("@/DashboardComponents/Admin/EnrollmentsManagement"));
 
-
-const EnrollmentsPage = () => {
+const EnrollmentsPage = async() => {
+  const getEnrollment=await getAllEnrollment()
   return (
     <div>
-        <EnrollmentsManagement/>
+        <EnrollmentsManagement getEnrollment={getEnrollment}/>
     </div>
   );
 };
