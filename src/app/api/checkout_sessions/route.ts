@@ -25,7 +25,7 @@ type EnrollDetails = {
 export async function POST(req: NextRequest) {
   try {
     const origin =
-      (await headers()).get("origin") || process.env.BETTER_AUTH_URL;
+      (await headers()).get("origin") || process.env.NEXT_PUBLIC_APP_URL;
     const body: EnrollDetails = await req.json();
     const {
       studentId,

@@ -159,7 +159,7 @@ Create a `.env.local` file.
 ```env
 NEXT_PUBLIC_SERVER_URL=https://programming-hero-a-11-course-manage.vercel.app
 
-BETTER_AUTH_URL=https://course-management-platform-client-4i05sl3f6.vercel.app
+NEXT_PUBLIC_APP_URL=https://course-management-platform-client-4i05sl3f6.vercel.app
 BETTER_AUTH_SECRET=your_secret
 
 GOOGLE_CLIENT_ID=your_google_client_id
