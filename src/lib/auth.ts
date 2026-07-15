@@ -10,6 +10,9 @@ export const auth = betterAuth({
   database: mongodbAdapter(db, { client }),
   emailAndPassword: { enabled: true },
 
+    trustedOrigins: [
+    "https://course-management-platform-client-4i05sl3f6.vercel.app"
+  ],
   user: {
     additionalFields: {
       role: {
