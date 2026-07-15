@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 const layout = async({children}:{children: ReactNode}) => {
     const user=await userDet()
     if(user?.role !=='student'){
-        redirect('/')
+        redirect('/unauthorized')
     }
   return <>{children}</>
 };

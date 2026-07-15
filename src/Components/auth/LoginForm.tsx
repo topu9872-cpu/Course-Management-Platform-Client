@@ -51,6 +51,7 @@ const redirectTo=params.get('redirect') || '/'
     }
   };
 
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-lg">
@@ -116,6 +117,7 @@ const redirectTo=params.get('redirect') || '/'
 
           <button className="btn btn-primary w-full">Login</button>
         </form>
+       
         <p className="mt-5 text-center text-sm text-gray-600">
           Don't have an account?{" "}
           <Link

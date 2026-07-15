@@ -13,7 +13,7 @@ const FeaturedCourses: React.FC = async () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <AnimatePresence>
-            {CoursesData?.map((course: any) => (
+            {CoursesData.slice(0,4).map((course: any) => (
               <AllCards key={course._id} course={course} />
             ))}
           </AnimatePresence>

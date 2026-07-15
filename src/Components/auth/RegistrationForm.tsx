@@ -63,7 +63,9 @@ const redirectTo=params.get('redirect')|| '/'
         },
       });
     }
-  };
+
+
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8">
@@ -170,6 +172,7 @@ const redirectTo=params.get('redirect')|| '/'
           {/* Register */}
           <button className="btn btn-primary w-full">Create Account</button>
         </form>
+      
         {/* Login */}
         <p className="mt-5 text-center text-sm">
           Already have an account?{" "}

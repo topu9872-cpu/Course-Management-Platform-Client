@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 interface PaginationProps {
   currentPage: number;
@@ -16,16 +16,18 @@ export default function PremiumPagination({
 }: PaginationProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
 
+    // Create a new URLSearchParams instance based on existing params
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", page.toString());
 
-    router.push(`/courses?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const getPageNumbers = () => {
@@ -58,7 +60,6 @@ export default function PremiumPagination({
         );
       }
     }
-
     return pages;
   };
 
@@ -106,8 +107,8 @@ export default function PremiumPagination({
           })}
         </div>
 
-        {/* Mobile */}
-        <div className="sm:hidden">
+        {/* Mobile View */}
+        <div className="sm:hidden text-neutral-600">
           Page {currentPage} of {totalPages}
         </div>
 

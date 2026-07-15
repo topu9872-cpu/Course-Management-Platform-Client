@@ -28,6 +28,7 @@ const NavBar = () => {
       <NavLink href="/">Home</NavLink>
       <NavLink href="/courses">Courses</NavLink>
       <NavLink href="/about">About</NavLink>
+      <NavLink href="/privacy">Privacy</NavLink>
     </>
   );
 
